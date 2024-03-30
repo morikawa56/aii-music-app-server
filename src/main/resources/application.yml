@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: aii-music-server
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.0.101:3306/aii_server
+    username: aii_server
+    password: 5C86pZkFaSzbj74E
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  data:
+    redis:
+      host: 192.168.0.101
+      port: 6379
+      password: Ajm428252
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
