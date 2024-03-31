@@ -1,5 +1,6 @@
 package xyz.mrkwcode.aiimusicserver.handlers;
 
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,11 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
         log.info("before");
         final String returnTypeName = returnType.getParameterType().getName();
         response.setStatusCode(HttpStatusCode.valueOf(200));
+        // if (body instanceof String) {
+        //     //解决返回值为字符串时，不能正常包装
+        //     log.info("JSON");
+        //     return JSON.toJSONString(Result.success(body, 200));
+        // }
         if("void".equals(returnTypeName)) {
             return Result.success(null, 200);
         }

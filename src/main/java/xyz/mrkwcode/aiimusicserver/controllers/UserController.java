@@ -9,6 +9,11 @@ import xyz.mrkwcode.aiimusicserver.exceptions.UniverCustomException;
 import xyz.mrkwcode.aiimusicserver.pojos.Result;
 import xyz.mrkwcode.aiimusicserver.pojos.User;
 import xyz.mrkwcode.aiimusicserver.services.UserService;
+import xyz.mrkwcode.aiimusicserver.utils.JwtUtil;
+import xyz.mrkwcode.aiimusicserver.utils.Md5Util;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -28,7 +33,24 @@ public class UserController {
             // 抛出异常（状态码，报错信息）
             throw new UniverCustomException(500, "用户名已被占用");
         }
+    }
 
+    @PostMapping("/login")
+    public String login(@Pattern(regexp = "^(?!_)(?!.*?_$)\\w{8,20}$") /* 8-20位大小写字母及数字下划线 */ String username,
+                      @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[\\s\\S]{8,16}$") String password) {
+        // 查询是否有同名用户
+        User loginUser = userService.findByUsername(username);
+        // 判断该用户是否存在
+        if(loginUser == null) throw new UniverCustomException(500, "用户名错误");
+        // 判断密码是否正确
+        if(Md5Util.getMD5String(password).equals(loginUser.getPassword())) {
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("uid", loginUser.getUid());
+            claims.put("username", loginUser.getUsername());
+            String token = JwtUtil.genToken(claims);
+            return token;
+        }
+        throw new UniverCustomException(500, "密码错误");
     }
     @GetMapping
     public User testClass() {
