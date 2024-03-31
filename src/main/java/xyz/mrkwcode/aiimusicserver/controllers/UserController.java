@@ -6,7 +6,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import xyz.mrkwcode.aiimusicserver.annos.ResponseResult;
 import xyz.mrkwcode.aiimusicserver.exceptions.UniverCustomException;
-import xyz.mrkwcode.aiimusicserver.pojos.Result;
 import xyz.mrkwcode.aiimusicserver.pojos.User;
 import xyz.mrkwcode.aiimusicserver.services.UserService;
 import xyz.mrkwcode.aiimusicserver.utils.JwtUtil;
@@ -47,8 +46,7 @@ public class UserController {
             Map<String, Object> claims = new HashMap<>();
             claims.put("uid", loginUser.getUid());
             claims.put("username", loginUser.getUsername());
-            String token = JwtUtil.genToken(claims);
-            return token;
+            return JwtUtil.genToken(claims);
         }
         throw new UniverCustomException(500, "密码错误");
     }

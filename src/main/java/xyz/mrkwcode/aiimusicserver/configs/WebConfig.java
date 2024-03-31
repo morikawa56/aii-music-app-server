@@ -33,11 +33,10 @@ public class WebConfig implements WebMvcConfigurer {
         FastJsonConfig fastJsonConfig = new FastJsonConfig();
         fastJsonConfig.setSerializerFeatures(SerializerFeature.PrettyFormat);    //处理中文乱码问题
         List<MediaType> fastMediaTypes = new ArrayList<>();
-        fastMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);    //在convert中添加配置信息.
+        fastMediaTypes.add(MediaType.APPLICATION_JSON);    //在convert中添加配置信息.
         fastJsonHttpMessageConverter.setSupportedMediaTypes(fastMediaTypes);
         fastJsonHttpMessageConverter.setFastJsonConfig(fastJsonConfig);
-        HttpMessageConverter<?> converter = fastJsonHttpMessageConverter;
-        return new HttpMessageConverters(converter);
+        return new HttpMessageConverters(fastJsonHttpMessageConverter);
     }
 
 }

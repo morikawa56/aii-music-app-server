@@ -8,7 +8,7 @@ public class TimeUtil {
 
     public static String dateToString(Date date, String formartStr) {
         String strDate = null;
-        if(date != null && formartStr != null && !"".equals(formartStr)) {
+        if(date != null && formartStr != null && !formartStr.isEmpty()) {
             SimpleDateFormat sdf = new SimpleDateFormat(formartStr);
             strDate = sdf.format(date);
         }

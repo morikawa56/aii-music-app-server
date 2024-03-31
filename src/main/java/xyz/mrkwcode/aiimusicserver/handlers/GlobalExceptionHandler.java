@@ -2,7 +2,6 @@ package xyz.mrkwcode.aiimusicserver.handlers;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import xyz.mrkwcode.aiimusicserver.exceptions.UniverCustomException;
