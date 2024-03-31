@@ -11,6 +11,9 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // return HandlerInterceptor.super.preHandle(request, response, handler);
-        throw new UniverCustomException(401, "未登录");
-    }
+        try {
+            return true;
+        } catch (Exception e) {
+            throw new UniverCustomException(401, "未登录");
+        }    }
 }

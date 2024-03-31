@@ -3,6 +3,7 @@ package xyz.mrkwcode.aiimusicserver.handlers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
@@ -33,6 +34,7 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
                                   ServerHttpResponse response) {
         log.info("before");
         final String returnTypeName = returnType.getParameterType().getName();
+        response.setStatusCode(HttpStatusCode.valueOf(200));
         if("void".equals(returnTypeName)) {
             return Result.success(null, 200);
         }
