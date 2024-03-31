@@ -3,7 +3,7 @@ CREATE TABLE `aii_music_user` (
   `uid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `username` varchar(20) NOT NULL COMMENT '用户名',
 	`nickname` varchar(20) NOT NULL COMMENT '昵称',
-	`password` varchar(25) NOT NULL COMMENT '密码',
+	`password` varchar(255) NOT NULL COMMENT '密码',
 	`email_address` varchar(255) COMMENT '电子邮件地址',
 	`phone_number` varchar(20) COMMENT '电话号码',
 	`avatar_url` varchar(255) COMMENT '用户头像URL',

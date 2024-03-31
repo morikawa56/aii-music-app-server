@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 @Data
 public class User {
     @NotNull
@@ -18,9 +20,9 @@ public class User {
     private String avatarUrl;
     private String permission;
     private String profile;
-    private long createdTime;
-    private long updatedTime;
+    private Timestamp createdTime;
+    private Timestamp updatedTime;
     private Integer isBanned;
-    private long bannedStart;
-    private long bannedEnd;
+    private Timestamp bannedStart;
+    private Timestamp bannedEnd;
 }
