@@ -358,15 +358,15 @@ https://big-event-gwd.oss-cn-beijing.aliyuncs.com/9bf1cf5b-1420-4c1b-91ad-e0f463
 
 请求参数说明：
 
-| 参数名称     | 说明           | 类型   | 是否必须 | 备注 |
-| ------------ | -------------- | ------ | -------- | ---- |
-| uid          | 用户主键ID     | number | 是       |      |
-| newPermisson | 申请新的权限组 | string | 是       |      |
+| 参数名称      | 说明           | 类型   | 是否必须 | 备注 |
+| ------------- | -------------- | ------ | -------- | ---- |
+| uid           | 用户主键uid    | number | 是       |      |
+| newPermission | 申请新的权限组 | string | 是       |      |
 
 请求数据样例：
 
 ```shell
-uid=3&newPermisson=creator
+uid=3&newPermission=creator
 ```
 
 #### 7.3 响应数据
@@ -409,15 +409,15 @@ uid=3&newPermisson=creator
 
 请求参数说明：
 
-| 参数名称 | 说明         | 类型   | 是否必须 | 备注         |
-| -------- | ------------ | ------ | -------- | ------------ |
-| uid      | 用户主键uid  | number | 是       |              |
-| isBanned | 设定是否封禁 | number | 是       | 0或1一位数字 |
+| 参数名称 | 说明         | 类型    | 是否必须 | 备注 |
+| -------- | ------------ | ------- | -------- | ---- |
+| uid      | 用户主键uid  | number  | 是       |      |
+| isBanned | 设定是否封禁 | boolean | 是       |      |
 
 请求数据样例：
 
 ```shell
-uid=6&isBanned=1
+uid=6&isBanned=true
 ```
 
 #### 8.3 响应数据

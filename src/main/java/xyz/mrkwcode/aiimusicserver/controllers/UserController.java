@@ -100,4 +100,17 @@ public class UserController {
         // 调用service完成密码更新
         userService.updatePwd(newPwd);
     }
+
+    @PatchMapping("/permission")
+    public void updatePermission(@RequestParam Integer uid, @RequestParam String newPermission) {
+        Map<String,Object> map = ThreadLocalUtil.get();
+        String username = (String) map.get("username");
+        User loginUser = userService.findByUsername(username);
+        if(loginUser.getPermission().equals("admin")) {
+            userService.updatePermission(uid, newPermission);
+        } else {
+            if(!uid.equals(loginUser.getUid())) throw new UniverCustomException(500, "普通用户请进行自己账号的权限申请");
+            else userService.forUpdatePermission(newPermission);
+        }
+    }
 }

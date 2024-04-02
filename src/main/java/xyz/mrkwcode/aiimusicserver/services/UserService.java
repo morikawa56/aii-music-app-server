@@ -13,4 +13,8 @@ public interface UserService {
     void updateAvatar(String avatarUrl);
 
     void updatePwd(String newPwd);
+
+    void updatePermission(Integer uid, String newPermission);
+
+    void forUpdatePermission(String newPermission);
 }
