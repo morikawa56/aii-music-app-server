@@ -7,4 +7,10 @@ public interface UserService {
     User findByUsername(String username);
     // 注册
     void signup(String username, String password);
+    // 更新信息
+    void update(User user);
+
+    void updateAvatar(String avatarUrl);
+
+    void updatePwd(String newPwd);
 }

@@ -1,15 +1,20 @@
 package xyz.mrkwcode.aiimusicserver.controllers;
 
 import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import xyz.mrkwcode.aiimusicserver.annos.ResponseResult;
 import xyz.mrkwcode.aiimusicserver.exceptions.UniverCustomException;
+import xyz.mrkwcode.aiimusicserver.pojos.Result;
 import xyz.mrkwcode.aiimusicserver.pojos.User;
 import xyz.mrkwcode.aiimusicserver.services.UserService;
 import xyz.mrkwcode.aiimusicserver.utils.JwtUtil;
 import xyz.mrkwcode.aiimusicserver.utils.Md5Util;
+import xyz.mrkwcode.aiimusicserver.utils.ThreadLocalUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,11 +56,48 @@ public class UserController {
         throw new UniverCustomException(500, "密码错误");
     }
     @GetMapping
-    public User testClass() {
-        User user = new User();
-        user.setUsername("admintest");
-        user.setPassword("Ajm991019");
-        user.setUid(1);
+    public User getInfo() {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        String username = (String) map.get("username");
+        User user = userService.findByUsername(username);
         return user;
+    }
+
+    @PutMapping
+    public void update(@RequestBody @Validated(User.Update.class) User user) {
+        userService.update(user);
+    }
+
+    @PatchMapping("/avatar")
+    public void updateAvatar(@RequestParam @URL String avatarUrl) {
+        userService.updateAvatar(avatarUrl);
+    }
+
+    @PatchMapping("/password")
+    public void updatePwd(@RequestBody Map<String,String> params,@RequestHeader("Authorization") String token) {
+        // 校验参数
+        String oldPwd = params.get("old_pwd");
+        String newPwd = params.get("new_pwd");
+        String rePwd = params.get("re_pwd");
+
+        if(!StringUtils.hasLength(oldPwd) || !StringUtils.hasLength(newPwd) || !StringUtils.hasLength(rePwd)) {
+            throw new UniverCustomException(500, "缺少必要的参数");
+        }
+
+        // 原密码是否正确
+        Map<String,Object> map = ThreadLocalUtil.get();
+        String username = (String) map.get("username");
+        User loginUser = userService.findByUsername(username);
+        if(!loginUser.getPassword().equals((Md5Util.getMD5String(oldPwd)))) {
+            throw new UniverCustomException(500, "原密码填写不正确");
+        }
+
+        // newPwd和rePwd是否一样
+        if(!rePwd.equals(newPwd)) {
+            throw new UniverCustomException(500, "两次填写的新密码不一样");
+        }
+
+        // 调用service完成密码更新
+        userService.updatePwd(newPwd);
     }
 }

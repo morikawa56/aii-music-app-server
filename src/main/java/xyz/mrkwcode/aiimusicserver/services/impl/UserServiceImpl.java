@@ -7,10 +7,13 @@ import xyz.mrkwcode.aiimusicserver.mappers.UserMapper;
 import xyz.mrkwcode.aiimusicserver.pojos.User;
 import xyz.mrkwcode.aiimusicserver.services.UserService;
 import xyz.mrkwcode.aiimusicserver.utils.Md5Util;
+import xyz.mrkwcode.aiimusicserver.utils.ThreadLocalUtil;
 import xyz.mrkwcode.aiimusicserver.utils.TimeUtil;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -41,5 +44,33 @@ public class UserServiceImpl implements UserService {
         u.setUpdatedTime(timestamp);
         // 向数据库添加记录
         userMapper.add(u);
+    }
+
+    @Override
+    public void update(User user) {
+        Map<String,Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        user.setUid(uid);
+        String now = TimeUtil.dateToString(new Date(), TimeUtil.TIME_FULL_SPRIT);
+        user.setUpdatedTime(Timestamp.valueOf(now));
+        userMapper.update(user);
+    }
+
+    @Override
+    public void updateAvatar(String avatarUrl) {
+        Map<String,Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        String now = TimeUtil.dateToString(new Date(), TimeUtil.TIME_FULL_SPRIT);
+        Timestamp updatedTime = Timestamp.valueOf(now);
+        userMapper.updateAvatar(avatarUrl, uid, updatedTime);
+    }
+
+    @Override
+    public void updatePwd(String newPwd) {
+        Map<String,Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        String now = TimeUtil.dateToString(new Date(), TimeUtil.TIME_FULL_SPRIT);
+        Timestamp updatedTime = Timestamp.valueOf(now);
+        userMapper.updatePwd(Md5Util.getMD5String(newPwd), uid, updatedTime);
     }
 }

@@ -155,23 +155,23 @@ username=zhangsan&password=Ajm564237
 ```json
 {
     "code": 0,
-    "status": 200,
-    "message": "操作成功",
     "data": {
-        "uid": 5,
-        "username": "zhangsan",
-        "nickname": "zhangsan",
-        "emailAddress": "",
-        "phoneNumber": "",
         "avatarUrl": "",
-        "permission": "user",
+        "bannedEnd": null,
+        "bannedStart": null,
+        "createdTime": "2024-03-31 20:36:32",
+        "emailAddress": "",
+        "isBanned": false,
+        "nickname": "morikawa56",
+        "permission": "admin",
+        "phoneNumber": "",
         "profile": "{}",
-        "createdTime": "2023-09-02 22:21:31",
-        "updatedTime": "2023-09-02 22:21:31",
-        "isBanned": "",
-        "bannedStart": "",
-        "bannedEnd": ""
-    }
+        "uid": 2,
+        "updatedTime": "2024-03-31 20:36:32",
+        "username": "morikawa56"
+    },
+    "message": "操作成功",
+    "status": 200
 }
 ```
 
