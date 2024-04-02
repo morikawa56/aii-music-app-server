@@ -360,12 +360,13 @@ https://big-event-gwd.oss-cn-beijing.aliyuncs.com/9bf1cf5b-1420-4c1b-91ad-e0f463
 
 | 参数名称     | 说明           | 类型   | 是否必须 | 备注 |
 | ------------ | -------------- | ------ | -------- | ---- |
+| uid          | 用户主键ID     | number | 是       |      |
 | newPermisson | 申请新的权限组 | string | 是       |      |
 
 请求数据样例：
 
 ```shell
-newPermisson=creator
+uid=3&newPermisson=creator
 ```
 
 #### 7.3 响应数据
