@@ -17,4 +17,8 @@ public interface UserService {
     void updatePermission(Integer uid, String newPermission);
 
     void forUpdatePermission(String newPermission);
+
+    void forBanUser(Boolean isBanned);
+
+    void banUser(Integer uid, Boolean isBanned);
 }

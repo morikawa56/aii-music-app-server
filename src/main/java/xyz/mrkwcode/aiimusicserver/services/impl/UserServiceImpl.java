@@ -5,7 +5,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import xyz.mrkwcode.aiimusicserver.mappers.UserMapper;
+import xyz.mrkwcode.aiimusicserver.DAOs.UserMapper;
 import xyz.mrkwcode.aiimusicserver.pojos.User;
 import xyz.mrkwcode.aiimusicserver.pojos.UserTask;
 import xyz.mrkwcode.aiimusicserver.services.UserService;
@@ -14,7 +14,6 @@ import xyz.mrkwcode.aiimusicserver.utils.ThreadLocalUtil;
 import xyz.mrkwcode.aiimusicserver.utils.TimeUtil;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,7 +79,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updatePermission(Integer uid, String newPermission) {
-        userMapper.updatePermission(uid,newPermission);
+        String now = TimeUtil.dateToString(new Date(), TimeUtil.TIME_FULL_SPRIT);
+        Timestamp updatedTime = Timestamp.valueOf(now);
+        userMapper.updatePermission(uid,newPermission,updatedTime);
     }
 
     @Override
@@ -108,5 +109,39 @@ public class UserServiceImpl implements UserService {
         log.info("userTaskMap: " + userTaskMap);
         userTask.setDetail(userTaskJson);
         userMapper.forUpdatePermission(userTask);
+    }
+
+    @Override
+    public void forBanUser(Boolean isBanned) {
+        Map<String,Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        String now = TimeUtil.dateToString(new Date(), TimeUtil.TIME_FULL_SPRIT);
+        Timestamp time = Timestamp.valueOf(now);
+        UserTask userTask = new UserTask();
+        userTask.setBeOperator(uid);
+        userTask.setPermission("admin");
+        Map<String,Object> userTaskMap = new HashMap<String,Object>();
+        userTaskMap.put("operation", "banUser");
+        userTaskMap.put("status", "TOC"); // TOC——等待批准
+        userTaskMap.put("update-to", isBanned);
+        userTaskMap.put("created_time", time);
+        userTaskMap.put("updated_time", null);
+        userTaskMap.put("finished_time", null);
+        String userTaskJson = JSONObject.toJSONString(userTaskMap,
+                SerializerFeature.WriteMapNullValue,
+                SerializerFeature.WriteNullBooleanAsFalse,
+                SerializerFeature.WriteNullListAsEmpty,
+                SerializerFeature.WriteNullStringAsEmpty,
+                SerializerFeature.WriteNullNumberAsZero);
+        log.info("userTaskMap: " + userTaskMap);
+        userTask.setDetail(userTaskJson);
+        userMapper.forBanUser(userTask);
+    }
+
+    @Override
+    public void banUser(Integer uid, Boolean isBanned) {
+        String now = TimeUtil.dateToString(new Date(), TimeUtil.TIME_FULL_SPRIT);
+        Timestamp updatedTime = Timestamp.valueOf(now);
+        userMapper.banUser(uid,isBanned,updatedTime);
     }
 }

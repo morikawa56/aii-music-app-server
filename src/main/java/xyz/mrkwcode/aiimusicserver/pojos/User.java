@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.groups.Default;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
+import xyz.mrkwcode.aiimusicserver.annos.Gender;
 import xyz.mrkwcode.aiimusicserver.annos.Permission;
 
 import java.sql.Timestamp;
@@ -22,6 +23,9 @@ public class User {
     @NotEmpty(groups = Update.class)
     @Pattern(regexp = "^\\S{1,20}$")
     private String nickname;
+    @Gender(groups = Update.class)
+    private String gender;
+    private Timestamp birth;
     @Email
     private String emailAddress;
     private String phoneNumber;

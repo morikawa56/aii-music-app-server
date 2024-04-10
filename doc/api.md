@@ -481,3 +481,361 @@ uid=6&isBanned=true
     "data": null
 }
 ```
+
+## 二、音乐相关接口
+
+### 1. 添加
+
+#### 1.1 基本信息
+
+> 请求路径：/api/music
+>
+> 请求方式：POST
+>
+> 接口描述：该接口添加一首歌曲，需要上传歌曲资源以及一些基本信息
+
+#### 1.2 请求参数
+
+请求参数格式：multipart/form-data
+
+请求参数说明：
+
+| 参数名称      | 说明     | 类型      | 是否必须 | 备注 |
+| ------------- | -------- | --------- | -------- | ---- |
+| musicname     | 音乐名称 | string    | 是       |      |
+| creator       | 创作者ID | string    | 是       |      |
+| album         | 专辑信息 | string    | 是       |      |
+| publishedTime | 发行时间 | timestamp | 是       |      |
+| res          | 表单中文件请求参数的名字 | file   | 是       |      |      |
+| musicAvatar  | 音乐图片                 | file   | 否       |      |      |
+| introduction | 音乐介绍                 | string | 否       |      |      |
+
+请求数据样例：
+
+无
+
+#### 1.3 响应数据
+
+响应数据类型：application/json
+
+响应参数说明：
+
+| 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
+| ------- | ------ | -------- | ------ | --------------------- | -------- |
+| code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| status  | number | 必须     |        | HTTP状态码            |          |
+| message | string | 非必须   |        | 提示信息              |          |
+| data    | object | 非必须   |        | 返回的数据            |          |
+
+响应数据样例：
+
+```json
+{
+    "code": 0,
+    "status": 200,
+    "message": "操作成功",
+    "data": null
+}
+```
+
+### 2. 查询歌曲列表（条件分页）
+
+#### 2.1 基本信息
+
+> 请求路径：/api/music
+>
+> 请求方式：GET
+>
+> 接口描述：该接口根据筛选条件查询歌曲列表
+
+#### 2.2 请求参数
+
+请求参数格式：x-www-form-urlencoded
+
+请求参数说明：
+
+| 参数名称  | 说明       | 类型   | 是否必须 | 备注 |
+| --------- | ---------- | ------ | -------- | ---- |
+| pageNum   | 当前页码   | number | 是       |      |
+| pageSize  | 每页条数   | number | 是       |      |
+| musicname | 音乐名称   | string | 否       |      |
+| creator   | 创作者名称 | string | 否       |      |
+
+请求数据样例：
+
+无
+
+#### 2.3 响应数据
+
+响应数据类型：application/json
+
+响应参数说明：
+
+| 名称             | 类型      | 是否必须 | 默认值 | 备注                  | 其他信息 |
+| ---------------- | --------- | -------- | ------ | --------------------- | -------- |
+| code             | number    | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| status           | number    | 必须     |        | HTTP状态码            |          |
+| message          | string    | 非必须   |        | 提示信息              |          |
+| data             | object    | 必须     |        | 返回的数据            | JSON数组 |
+| \|-mid           | number    | 非必须   |        | 音乐主键ID            |          |
+| \|-musicname     | string    | 非必须   |        | 音乐名称              |          |
+| \|-creator       | string    | 非必须   |        | 创作者ID              | JSON     |
+| \|-album         | string    | 非必须   |        | 专辑ID                | JSON     |
+| \|-introduction  | string    | 非必须   |        | 歌曲介绍              |          |
+| \|-musicAvatar   | string    | 非必须   |        | 音乐图片地址          |          |
+| \|-lyric         | string    | 非必须   |        | 歌词                  |          |
+| \|-resUrl        | string    | 非必须   |        | 资源地址              |          |
+| \|-publishedTime | timestamp | 非必须   |        | 发行时间              |          |
+| \|-createdTime   | timestamp | 非必须   |        | 创建时间              |          |
+| \|-updatedTime   | timestamp | 非必须   |        | 更新时间              |          |
+
+响应数据样例：
+
+```json
+{
+    "code": 0,
+    "status": 200,
+    "message": "操作成功",
+    "data": [{
+        "mid": 22,
+        "musicname": "aaaa",
+        "creator": [2,25],
+        "album": [53],
+        "introduction": "bbbbbbbbb...",
+        "musicAvatar": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b5811871-acc8-4583-8399-cf0dc73591ab.jpg",
+        "lyric": "………………",
+        "resUrl": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b5811871-acc8-4583-8399-cf0dc73591ab.mp3",
+        "publishedTime": 1435645397,
+        "createdTime": 1712634453,
+        "updatedTime": 1712645397
+    },
+    {
+        "mid": 2345342,
+        "musicname": "eeee",
+        "creator": [24,453],
+        "album": [5345,4234],
+        "introduction": "bbsdfsdfgb...",
+        "musicAvatar": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b582231-acc8-4dfs-8234-cf0325391ab.jpg",
+        "lyric": "………………",
+        "resUrl": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b5811871-acc8-4583-8399-cf0dc73591ab.mp3",
+        "publishedTime": 1435645397,
+        "createdTime": 171263445,
+        "updatedTime": 1712645397
+    }
+    ...
+    ]
+}
+```
+
+### 3. 更新歌曲信息
+
+#### 3.1 基本信息
+
+> 请求路径：/api/music
+>
+> 请求方式：PUT
+>
+> 接口描述：该接口用于更新歌曲的基本信息
+
+#### 3.2 请求参数
+
+请求参数格式：application/json
+
+请求参数说明：
+
+| 参数名称      | 说明     | 类型   | 是否必须 | 备注 |      |
+| ------------- | -------- | ------ | -------- | ---- | ---- |
+| mid           | 主键ID   | number | 是       |      |      |
+| musicname     | 音乐名称 | string | 否       |      |      |
+| creatorId     | 创作者ID | number | 否       |      |      |
+| introduction  | 音乐介绍 | string | 否       |      |      |
+| publishedTime | 发布时间 | string | 否       |      |      |
+| lyric         | 歌词信息 | string | 否       |      |      |
+
+请求数据样例：
+
+```json
+{
+    "mid":4,
+    "musicname": "aaa",
+    "creatorId": 2,
+    "introduction": "bbbbb",
+    "publishedTime": 1712645397,
+    "lyric": "………………"
+}
+```
+
+#### 3.3 响应数据
+
+响应数据类型：application/json
+
+响应参数说明：
+
+| 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
+| ------- | ------ | -------- | ------ | --------------------- | -------- |
+| code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| message | string | 非必须   |        | 提示信息              |          |
+| data    | object | 非必须   |        | 返回的数据            |          |
+
+响应数据样例：
+
+```json
+{
+    "code": 0,
+    "status": 200,
+    "message": "操作成功",
+    "data": null
+}
+```
+
+### 4. 更新歌曲资源
+
+#### 4.1 基本信息
+
+> 请求路径：/api/music/res
+>
+> 请求方式：PUT
+>
+> 接口描述：该接口用于更新歌曲的资源链接
+
+#### 4.2 请求参数
+
+请求参数格式：multipart/form-data
+
+请求参数说明：
+
+| 参数名称 | 说明                     | 类型   | 是否必须 | 备注 |      |
+| -------- | ------------------------ | ------ | -------- | ---- | ---- |
+| mid      | 主键ID                   | number | 是       |      |      |
+| file     | 表单中文件请求参数的名字 | file   | 是       |      |      |
+
+请求数据样例：
+
+无
+
+#### 4.3 响应数据
+
+响应数据类型：application/json
+
+响应参数说明：
+
+| 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
+| ------- | ------ | -------- | ------ | --------------------- | -------- |
+| code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| message | string | 非必须   |        | 提示信息              |          |
+| data    | object | 非必须   |        | 返回的数据            |          |
+
+响应数据样例：
+
+```json
+{
+    "code": 0,
+    "status": 200,
+    "message": "操作成功",
+    "data": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b5811871-acc8-4583-8399-cf0dc73591ab.mp3"
+}
+```
+
+### 5. 更新歌曲图片
+
+#### 5.1 基本信息
+
+> 请求路径：/api/music/avatar
+>
+> 请求方式：PUT
+>
+> 接口描述：该接口用于更新歌曲的封面图片
+
+#### 5.2 请求参数
+
+请求参数格式：multipart/form-data
+
+请求参数说明：
+
+| 参数名称 | 说明                     | 类型   | 是否必须 | 备注 |      |
+| -------- | ------------------------ | ------ | -------- | ---- | ---- |
+| mid      | 主键ID                   | number | 是       |      |      |
+| file     | 表单中文件请求参数的名字 | file   | 是       |      |      |
+
+请求数据样例：
+
+无
+
+#### 5.3 响应数据
+
+响应数据类型：application/json
+
+响应参数说明：
+
+| 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
+| ------- | ------ | -------- | ------ | --------------------- | -------- |
+| code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| message | string | 非必须   |        | 提示信息              |          |
+| data    | object | 非必须   |        | 返回的数据            |          |
+
+响应数据样例：
+
+```json
+{
+    "code": 0,
+    "status": 200,
+    "message": "操作成功",
+    "data": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b5811871-acc8-4583-8399-cf0dc73591ab.jpg"
+}
+```
+
+### 5. 下架歌曲
+
+#### 5.1 基本信息
+
+> 请求路径：/api/music/unshelve
+>
+> 请求方式：DELETE
+>
+> 接口描述：该接口用于更新歌曲的封面图片
+
+#### 5.2 请求参数
+
+请求参数格式：application/json
+
+请求参数说明：
+
+| 参数名称 | 说明     | 类型    | 是否必须 | 备注                                                         |      |
+| -------- | -------- | ------- | -------- | ------------------------------------------------------------ | ---- |
+| mid      | 主键ID   | number  | 是       |                                                              |      |
+| type     | 下架类型 | boolean | 是       | false=永久下架（删除所有信息）\|true=临时下架（禁止用户访问） |      |
+
+请求数据样例：
+
+```json
+{
+    "mid": 5,
+    "type" true
+}
+```
+
+
+
+#### 5.3 响应数据
+
+响应数据类型：application/json
+
+响应参数说明：
+
+| 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
+| ------- | ------ | -------- | ------ | --------------------- | -------- |
+| code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| message | string | 非必须   |        | 提示信息              |          |
+| data    | object | 非必须   |        | 返回的数据            |          |
+
+响应数据样例：
+
+```json
+{
+    "code": 0,
+    "status": 200,
+    "message": "操作成功",
+    "data": null
+}
+```
+
