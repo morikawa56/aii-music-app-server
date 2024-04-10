@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Tencent Secret ###
+!.src/main/java/xyz/mrkwcode/aiimusicserver/utils/TcosUtil/config/*-default.yml
