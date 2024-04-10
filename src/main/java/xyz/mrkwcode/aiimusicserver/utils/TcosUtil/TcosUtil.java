@@ -14,19 +14,36 @@ import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.model.StorageClass;
 import com.qcloud.cos.region.Region;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 
 public class TcosUtil {
+    private static final String UTIL_LOCAL_DIR = "src/main/java/xyz/mrkwcode/aiimusicserver/utils/TcosUtil/";
+
     // 1 初始化用户身份信息（secretId, secretKey）。
     // SECRETID 和 SECRETKEY 请登录访问管理控制台 https://console.cloud.tencent.com/cam/capi 进行查看和管理
-    private static final String SECRET_ID = "";//用户的 SecretId，建议使用子账号密钥，授权遵循最小权限指引，降低使用风险。子账号密钥获取可参见 https://cloud.tencent.com/document/product/598/37140
-    private static final String SECRET_KEY = "";//用户的 SecretKey，建议使用子账号密钥，授权遵循最小权限指引，降低使用风险。子账号密钥获取可参见 https://cloud.tencent.com/document/product/598/37140
+    private static final String SECRET_ID;//用户的 SecretId，建议使用子账号密钥，授权遵循最小权限指引，降低使用风险。子账号密钥获取可参见 https://cloud.tencent.com/document/product/598/37140
+
+    static {
+        try {
+            SECRET_ID = LoadFileConfig.readSecretInfo(new FileInputStream(UTIL_LOCAL_DIR + "config/config.yml")).get("secret-id").toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static final String SECRET_KEY;//用户的 SecretKey，建议使用子账号密钥，授权遵循最小权限指引，降低使用风险。子账号密钥获取可参见 https://cloud.tencent.com/document/product/598/37140
+    static {
+        try {
+            SECRET_KEY = LoadFileConfig.readSecretInfo(new FileInputStream(UTIL_LOCAL_DIR + "config/config.yml")).get("secret-key").toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
     private static final String REGION_NAME = "ap-nanjing";
     private static final String BUCKET_NAME = "private-1301858127";
+
     public static COSClient initClient() {
 
         COSCredentials cred = new BasicCOSCredentials(SECRET_ID, SECRET_KEY);
@@ -55,7 +72,8 @@ public class TcosUtil {
         try {
             PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
             System.out.println(putObjectResult.getRequestId());
-            url = "https://" + BUCKET_NAME + ".cos." + REGION_NAME + ".myqcloud.com/" + path + URLEncoder.encode(key, "UTF-8");
+            url = "https://" + BUCKET_NAME + ".cos." + REGION_NAME + ".myqcloud.com/" + path + URLEncoder.encode(key, Charset.defaultCharset().displayName());
+            url = url.replaceAll("\\+", "%20");
         } catch (CosServiceException e) {
             e.printStackTrace();
         } catch (CosClientException | UnsupportedEncodingException e) {

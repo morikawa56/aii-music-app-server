@@ -62,7 +62,7 @@ public class UserController {
             if(operations.get("AiiMusic:" + "usertoken-" + loginUser.getUid()) != null) {
                 operations.getOperations().delete("AiiMusic:" + "usertoken-" + loginUser.getUid());
             }
-            operations.set("AiiMusic:" + "usertoken-" + loginUser.getUid(), token, 1, TimeUnit.HOURS);
+            operations.set("AiiMusic:" + "usertoken-" + loginUser.getUid(), token, 30, TimeUnit.DAYS);
             return token;
         }
         throw new UniverCustomException(500, "密码错误");
