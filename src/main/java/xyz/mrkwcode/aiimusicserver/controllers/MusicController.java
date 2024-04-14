@@ -9,7 +9,10 @@ import org.springframework.web.multipart.MultipartFile;
 import xyz.mrkwcode.aiimusicserver.annos.ResponseResult;
 import xyz.mrkwcode.aiimusicserver.exceptions.UniverCustomException;
 import xyz.mrkwcode.aiimusicserver.pojos.Music;
+import xyz.mrkwcode.aiimusicserver.pojos.MusicReq;
 import xyz.mrkwcode.aiimusicserver.pojos.PageBean;
+import xyz.mrkwcode.aiimusicserver.pojos.UnshelveReq;
+import xyz.mrkwcode.aiimusicserver.services.CreatorService;
 import xyz.mrkwcode.aiimusicserver.services.MusicService;
 import xyz.mrkwcode.aiimusicserver.utils.TcosUtil.TcosUtil;
 
@@ -21,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -32,6 +36,12 @@ import java.util.UUID;
 public class MusicController {
     @Autowired
     private MusicService musicService;
+
+    @Autowired
+    private CreatorService creatorService;
+
+    private static final String COS_MRES_PATH = "aii-music/musicres/";
+    private static final String COS_MAVATAR_PATH = "aii-music/musicavatar/";
 
     @PostMapping
     public void addMusic(HttpServletRequest req, // 音乐信息主干
@@ -61,12 +71,12 @@ public class MusicController {
         // 文件上传
         String resOriginalFilename = resource.getOriginalFilename();
         String resFilename = resOriginalFilename.substring(0, resOriginalFilename.lastIndexOf(".")) + "_" + UUID.randomUUID().toString() + resOriginalFilename.substring(resOriginalFilename.lastIndexOf("."));
-        String resUrl = TcosUtil.uploadFile("test/", resFilename, resource.getInputStream());
+        String resUrl = TcosUtil.uploadFile(COS_MRES_PATH, resFilename, resource.getInputStream());
         String avatarUrl = "";
         if(!musicAvatar.isEmpty()) {
             String avatarOriginalFilename = musicAvatar.getOriginalFilename();
             String avatarFilename = avatarOriginalFilename.substring(0, avatarOriginalFilename.lastIndexOf(".")) + "_" + UUID.randomUUID().toString() + avatarOriginalFilename.substring(avatarOriginalFilename.lastIndexOf("."));
-            avatarUrl = TcosUtil.uploadFile("test/", avatarFilename, musicAvatar.getInputStream());
+            avatarUrl = TcosUtil.uploadFile(COS_MAVATAR_PATH, avatarFilename, musicAvatar.getInputStream());
         }
 
         Music music = new Music();
@@ -83,6 +93,79 @@ public class MusicController {
 
     @GetMapping
     public PageBean<Music> getMusicList(Integer pageNum,@RequestParam(required = false) Integer pageSize, @RequestParam(required = false) String musicname, @RequestParam(required = false) String creator, @RequestParam(required = false) Boolean mode) {
-        return musicService.getMusicList(pageNum, Objects.requireNonNullElse(pageSize, 20), musicname, creator, Objects.requireNonNullElse(mode, false));
+        Integer cid = creatorService.findByCreatorName(creator).getCid();
+        // System.out.println(cid);
+        return musicService.getMusicList(pageNum, Objects.requireNonNullElse(pageSize, 20), musicname, String.valueOf(cid), Objects.requireNonNullElse(mode, false));
+    }
+
+    @PutMapping
+    public void updateMusicInfo(@RequestBody MusicReq musicReq) {
+        Music music = new Music();
+        music.setMid(musicReq.getMid());
+        music.setMusicname(musicReq.getMusicname());
+        music.setCreator(musicReq.getCreator());
+        music.setIntroduction(musicReq.getIntroduction());
+        music.setLyric(musicReq.getLyric());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        Instant instant = Instant.ofEpochSecond(Long.parseLong(musicReq.getPublishedTime()));
+        String publishedTimestamp = formatter.format(LocalDateTime.ofInstant(instant, ZoneId.systemDefault()));
+        Timestamp publishedTimetsp = Timestamp.valueOf(publishedTimestamp);
+        System.out.println(publishedTimestamp);
+        music.setPublishedTime(publishedTimetsp);
+        musicService.updateMusicInfo(music);
+    }
+
+    @PutMapping("/res")
+    public String updateMusicRes(@RequestParam("mid") Integer mid,@RequestParam("file") MultipartFile file) throws IOException {
+        Music music = musicService.findByMid(mid);
+        String oldUrl = music.getResUrl();
+        TcosUtil.removeObject(oldUrl);
+
+        String resOriginalFilename = file.getOriginalFilename();
+        String resFilename = null;
+        if (resOriginalFilename != null) {
+            resFilename = resOriginalFilename.substring(0, resOriginalFilename.lastIndexOf(".")) + "_" + UUID.randomUUID().toString() + resOriginalFilename.substring(resOriginalFilename.lastIndexOf("."));
+        }
+        String resUrl = TcosUtil.uploadFile(COS_MRES_PATH, resFilename, file.getInputStream());
+        musicService.updateMusicRes(mid, resUrl);
+        return resUrl;
+    }
+
+    @PutMapping("/avatar")
+    public String updateMusicAvatar(@RequestParam("mid") Integer mid,@RequestParam("file") MultipartFile file) throws IOException {
+        Music music = musicService.findByMid(mid);
+        String oldUrl = music.getMusicAvatar();
+        TcosUtil.removeObject(oldUrl);
+
+        String resOriginalFilename = file.getOriginalFilename();
+        String resFilename = null;
+        if (resOriginalFilename != null) {
+            resFilename = resOriginalFilename.substring(0, resOriginalFilename.lastIndexOf(".")) + "_" + UUID.randomUUID().toString() + resOriginalFilename.substring(resOriginalFilename.lastIndexOf("."));
+        }
+        String resUrl = TcosUtil.uploadFile(COS_MAVATAR_PATH, resFilename, file.getInputStream());
+        musicService.updateMusicAvatar(mid, resUrl);
+        return resUrl;
+    }
+
+    @DeleteMapping("/unshelve")
+    public void unshelve(@RequestBody UnshelveReq unshelveReq) {
+        Integer mid = unshelveReq.getMid();
+        Boolean type = unshelveReq.getType();
+        if(type) {
+            musicService.unshelveMusic(mid);
+        } else {
+            Music music = musicService.findByMid(mid);
+            ArrayList<String> urls = new ArrayList<>();
+            urls.add(music.getMusicAvatar());
+            urls.add(music.getResUrl());
+            TcosUtil.removeObject(urls);
+            musicService.deleteMusic(mid);
+        }
+    }
+
+    @PatchMapping("/shelve")
+    public void shelve(@RequestParam Integer mid) {
+        musicService.shelveMusic(mid);
     }
 }

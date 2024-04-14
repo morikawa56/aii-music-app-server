@@ -554,12 +554,13 @@ uid=6&isBanned=true
 
 请求参数说明：
 
-| 参数名称  | 说明       | 类型   | 是否必须 | 备注 |
-| --------- | ---------- | ------ | -------- | ---- |
-| pageNum   | 当前页码   | number | 是       |      |
-| pageSize  | 每页条数   | number | 是       |      |
-| musicname | 音乐名称   | string | 否       |      |
-| creator   | 创作者名称 | string | 否       |      |
+| 参数名称  | 说明               | 类型    | 是否必须 | 备注        |
+| --------- | ------------------ | ------- | -------- | ----------- |
+| pageNum   | 当前页码           | number  | 是       |             |
+| pageSize  | 每页条数           | number  | 是       |             |
+| musicname | 音乐名称           | string  | 否       |             |
+| creator   | 创作者名称         | string  | 否       |             |
+| mode      | 是否开启仅当前用户 | boolean | 否       | 默认为false |
 
 请求数据样例：
 
@@ -619,7 +620,7 @@ uid=6&isBanned=true
         "lyric": "………………",
         "resUrl": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b5811871-acc8-4583-8399-cf0dc73591ab.mp3",
         "publishedTime": 1435645397,
-        "createdTime": 171263445,
+        "createdTime": 1712634452,
         "updatedTime": 1712645397
     }
     ...
@@ -643,14 +644,14 @@ uid=6&isBanned=true
 
 请求参数说明：
 
-| 参数名称      | 说明     | 类型   | 是否必须 | 备注 |      |
-| ------------- | -------- | ------ | -------- | ---- | ---- |
-| mid           | 主键ID   | number | 是       |      |      |
-| musicname     | 音乐名称 | string | 否       |      |      |
-| creatorId     | 创作者ID | number | 否       |      |      |
-| introduction  | 音乐介绍 | string | 否       |      |      |
-| publishedTime | 发布时间 | string | 否       |      |      |
-| lyric         | 歌词信息 | string | 否       |      |      |
+| 参数名称      | 说明         | 类型   | 是否必须 | 备注     |      |
+| ------------- | ------------ | ------ | -------- | -------- | ---- |
+| mid           | 主键ID       | number | 是       |          |      |
+| musicname     | 音乐名称     | string | 否       |          |      |
+| creator       | 创作者ID数组 | string | 否       | JSON格式 |      |
+| introduction  | 音乐介绍     | string | 否       |          |      |
+| publishedTime | 发布时间     | string | 否       |          |      |
+| lyric         | 歌词信息     | string | 否       |          |      |
 
 请求数据样例：
 
@@ -658,7 +659,7 @@ uid=6&isBanned=true
 {
     "mid":4,
     "musicname": "aaa",
-    "creatorId": 2,
+    "creator": "[43,543]",
     "introduction": "bbbbb",
     "publishedTime": 1712645397,
     "lyric": "………………"
@@ -674,6 +675,7 @@ uid=6&isBanned=true
 | 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
 | ------- | ------ | -------- | ------ | --------------------- | -------- |
 | code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| status  | number | 必须     |        | HTTP状态码            |          |
 | message | string | 非必须   |        | 提示信息              |          |
 | data    | object | 非必须   |        | 返回的数据            |          |
 
@@ -722,6 +724,7 @@ uid=6&isBanned=true
 | 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
 | ------- | ------ | -------- | ------ | --------------------- | -------- |
 | code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| status  | number | 必须     |        | HTTP状态码            |          |
 | message | string | 非必须   |        | 提示信息              |          |
 | data    | object | 非必须   |        | 返回的数据            |          |
 
@@ -770,6 +773,7 @@ uid=6&isBanned=true
 | 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
 | ------- | ------ | -------- | ------ | --------------------- | -------- |
 | code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| status  | number | 必须     |        | HTTP状态码            |          |
 | message | string | 非必须   |        | 提示信息              |          |
 | data    | object | 非必须   |        | 返回的数据            |          |
 
@@ -792,7 +796,7 @@ uid=6&isBanned=true
 >
 > 请求方式：DELETE
 >
-> 接口描述：该接口用于更新歌曲的封面图片
+> 接口描述：该接口用于临时或彻底删除某个歌曲
 
 #### 5.2 请求参数
 
@@ -810,7 +814,7 @@ uid=6&isBanned=true
 ```json
 {
     "mid": 5,
-    "type" true
+    "type": true
 }
 ```
 
@@ -825,6 +829,263 @@ uid=6&isBanned=true
 | 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
 | ------- | ------ | -------- | ------ | --------------------- | -------- |
 | code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| status  | number | 必须     |        | HTTP状态码            |          |
+| message | string | 非必须   |        | 提示信息              |          |
+| data    | object | 非必须   |        | 返回的数据            |          |
+
+响应数据样例：
+
+```json
+{
+    "code": 0,
+    "status": 200,
+    "message": "操作成功",
+    "data": null
+}
+```
+
+### 6. 重新上架歌曲
+
+#### 6.1 基本信息
+
+> 请求路径：/api/music/shelve
+>
+> 请求方式：DELETE
+>
+> 接口描述：该接口用于重新上架被临时下架的歌曲
+
+#### 6.2 请求参数
+
+请求参数格式：x-www-form-urlencoded
+
+请求参数说明：
+
+| 参数名称 | 说明   | 类型   | 是否必须 | 备注 |      |
+| -------- | ------ | ------ | -------- | ---- | ---- |
+| mid      | 主键ID | number | 是       |      |      |
+
+请求数据样例：
+
+```shell
+mid=5
+```
+
+#### 6.3 响应数据
+
+响应数据类型：application/json
+
+响应参数说明：
+
+| 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
+| ------- | ------ | -------- | ------ | --------------------- | -------- |
+| code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| status  | number | 必须     |        | HTTP状态码            |          |
+| message | string | 非必须   |        | 提示信息              |          |
+| data    | object | 非必须   |        | 返回的数据            |          |
+
+响应数据样例：
+
+```json
+{
+    "code": 0,
+    "status": 200,
+    "message": "操作成功",
+    "data": null
+}
+```
+
+## 三、歌单相关接口
+
+### 1. 添加歌单
+
+#### 1.1 基本信息
+
+> 请求路径：/api/musiclist
+>
+> 请求方式：POST
+>
+> 接口描述：该接口建立一个新歌单
+
+#### 1.2 请求参数
+
+请求参数格式：multipart/form-data
+
+请求参数说明：
+
+| 参数名称      | 说明   | 类型   | 是否必须 | 备注 |      |
+| ------------- | ------ | ------ | -------- | ---- | ---- |
+| musiclistname | 歌单名 | string | 是       |      |      |
+
+请求数据样例：
+
+```shell
+musiclistname=喜欢的歌曲
+```
+
+#### 1.3 响应数据
+
+响应数据类型：application/json
+
+响应参数说明：
+
+| 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
+| ------- | ------ | -------- | ------ | --------------------- | -------- |
+| code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| status  | number | 必须     |        | HTTP状态码            |          |
+| message | string | 非必须   |        | 提示信息              |          |
+| data    | object | 非必须   |        | 返回的数据            |          |
+
+响应数据样例：
+
+```json
+{
+    "code": 0,
+    "status": 200,
+    "message": "操作成功",
+    "data": null
+}
+```
+
+### 2. 修改歌单信息
+
+#### 2.1 基本信息
+
+> 请求路径：/api/musiclist
+>
+> 请求方式：PUT
+>
+> 接口描述：该接口修改歌单信息的基本信息
+
+#### 2.2 请求参数
+
+请求参数格式：multipart/form-data
+
+请求参数说明：
+
+| 参数名称        | 说明     | 类型   | 是否必须 | 备注 |      |
+| --------------- | -------- | ------ | -------- | ---- | ---- |
+| musiclistname   | 歌单名   | string | 否       |      |      |
+| musiclistAvatar | 歌单封面 | file   | 否       |      |      |
+| introduction    | 歌单介绍 | string | 否       |      |      |
+| style           | 歌单风格 | string | 否       |      |      |
+
+请求数据样例：
+
+无
+
+#### 2.3 响应数据
+
+响应数据类型：application/json
+
+响应参数说明：
+
+| 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
+| ------- | ------ | -------- | ------ | --------------------- | -------- |
+| code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| status  | number | 必须     |        | HTTP状态码            |          |
+| message | string | 非必须   |        | 提示信息              |          |
+| data    | object | 非必须   |        | 返回的数据            |          |
+
+响应数据样例：
+
+```json
+{
+    "code": 0,
+    "status": 200,
+    "message": "操作成功",
+    "data": null
+}
+```
+
+### 3. 导出歌单列表
+
+#### 3.1 基本信息
+
+> 请求路径：/api/musiclist
+>
+> 请求方式：GET
+>
+> 接口描述：该接口导出根据条件筛选的歌单列表
+
+#### 3.2 请求参数
+
+请求参数格式：multipart/form-data
+
+请求参数说明：
+
+| 参数名称        | 说明     | 类型   | 是否必须 | 备注 |      |
+| --------------- | -------- | ------ | -------- | ---- | ---- |
+| musiclistname   | 歌单名   | string | 否       |      |      |
+| musiclistAvatar | 歌单封面 | file   | 否       |      |      |
+| introduction    | 歌单介绍 | string | 否       |      |      |
+| style           | 歌单风格 | string | 否       |      |      |
+
+请求数据样例：
+
+无
+
+#### 3.3 响应数据
+
+响应数据类型：application/json
+
+响应参数说明：
+
+| 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
+| ------- | ------ | -------- | ------ | --------------------- | -------- |
+| code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| status  | number | 必须     |        | HTTP状态码            |          |
+| message | string | 非必须   |        | 提示信息              |          |
+| data    | object | 非必须   |        | 返回的数据            |          |
+
+响应数据样例：
+
+```json
+{
+    "code": 0,
+    "status": 200,
+    "message": "操作成功",
+    "data": null
+}
+```
+
+### 4. 获得推荐歌单
+
+#### 4.1 基本信息
+
+> 请求路径：/api/musiclist/recommend
+>
+> 请求方式：GET
+>
+> 接口描述：该接口导出根据条件筛选的歌单列表
+
+#### 4.2 请求参数
+
+请求参数格式：x-www-form-urlencoded
+
+请求参数说明：
+
+| 参数名称 | 说明   | 类型   | 是否必须 | 备注 |      |
+| -------- | ------ | ------ | -------- | ---- | ---- |
+| uid      | 用户ID | number | 否       |      |      |
+
+请求数据样例：
+
+````shell
+uid=3
+````
+
+
+
+#### 4.3 响应数据
+
+响应数据类型：application/json
+
+响应参数说明：
+
+| 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
+| ------- | ------ | -------- | ------ | --------------------- | -------- |
+| code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| status  | number | 必须     |        | HTTP状态码            |          |
 | message | string | 非必须   |        | 提示信息              |          |
 | data    | object | 非必须   |        | 返回的数据            |          |
 

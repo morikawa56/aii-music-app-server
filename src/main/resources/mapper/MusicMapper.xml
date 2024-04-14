@@ -14,4 +14,16 @@
             </if>
         </where>
     </select>
+    <select id="getMusicListUserId" resultType="xyz.mrkwcode.aiimusicserver.pojos.Music">
+        Select * from aii_music_musicinfo
+        <where>
+            <if test="musicname!=null">
+                position( #{musicname} in musicname )
+            </if>
+            <if test="creator!=null">
+                and json_contains( creator, #{creator} )
+            </if>
+            and uid=#{uid}
+        </where>
+    </select>
 </mapper>

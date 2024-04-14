@@ -7,16 +7,17 @@ import com.qcloud.cos.auth.BasicCOSCredentials;
 import com.qcloud.cos.auth.COSCredentials;
 import com.qcloud.cos.exception.CosClientException;
 import com.qcloud.cos.exception.CosServiceException;
+import com.qcloud.cos.exception.MultiObjectDeleteException;
 import com.qcloud.cos.http.HttpProtocol;
-import com.qcloud.cos.model.ObjectMetadata;
-import com.qcloud.cos.model.PutObjectRequest;
-import com.qcloud.cos.model.PutObjectResult;
-import com.qcloud.cos.model.StorageClass;
+import com.qcloud.cos.model.*;
 import com.qcloud.cos.region.Region;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TcosUtil {
     private static final String UTIL_LOCAL_DIR = "src/main/java/xyz/mrkwcode/aiimusicserver/utils/TcosUtil/";
@@ -84,7 +85,56 @@ public class TcosUtil {
         return url;
     }
 
+    public static String removeObject(String oldUrl) throws CosClientException, UnsupportedEncodingException {
+        COSClient cosClient = initClient();
+        String key = URLDecoder.decode(oldUrl.substring(("https://" + BUCKET_NAME + ".cos." + REGION_NAME + ".myqcloud.com/").length()), Charset.defaultCharset().displayName());
+        try {
+            boolean objectExists = cosClient.doesObjectExist(BUCKET_NAME, key);
+            if(objectExists) {
+                cosClient.deleteObject(BUCKET_NAME, key);
+            } else {
+                return "文件不存在";
+            }
+        } catch (CosServiceException e) {
+            e.printStackTrace();
+        } catch (CosClientException e) {
+            e.printStackTrace();
+        }
+        cosClient.shutdown();
+        return key + "删除成功";
+    }
 
 
-
+    public static String removeObject(ArrayList<String> oldUrls) {
+        COSClient cosClient = initClient();
+        DeleteObjectsRequest deleteObjectsRequest = new DeleteObjectsRequest(BUCKET_NAME);
+        ArrayList<DeleteObjectsRequest.KeyVersion> keyList = new ArrayList<>();
+        oldUrls.forEach(url -> {
+            try {
+                String key = URLDecoder.decode(url.substring(("https://" + BUCKET_NAME + ".cos." + REGION_NAME + ".myqcloud.com/").length()), Charset.defaultCharset().displayName());
+                boolean objectExists = cosClient.doesObjectExist(BUCKET_NAME, key);
+                if(objectExists) {
+                    keyList.add(new DeleteObjectsRequest.KeyVersion(key));
+                }
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        deleteObjectsRequest.setKeys(keyList);
+        try {
+            DeleteObjectsResult deleteObjectsResult = cosClient.deleteObjects(deleteObjectsRequest);
+            List<DeleteObjectsResult.DeletedObject> deleteObjectResultArray = deleteObjectsResult.getDeletedObjects();
+        } catch (MultiObjectDeleteException mde) {
+            // 如果部分删除成功部分失败, 返回 MultiObjectDeleteException
+            List<DeleteObjectsResult.DeletedObject> deleteObjects = mde.getDeletedObjects();
+            List<MultiObjectDeleteException.DeleteError> deleteErrors = mde.getErrors();
+        } catch (CosServiceException e) {
+            e.printStackTrace();
+        } catch (CosClientException e) {
+            e.printStackTrace();
+        }
+        // 确认本进程不再使用 cosClient 实例之后，关闭即可
+        cosClient.shutdown();
+        return "删除成功";
+    }
 }
