@@ -1096,7 +1096,34 @@ uid=3
     "code": 0,
     "status": 200,
     "message": "操作成功",
-    "data": null
+    "data": [
+        {"mid": 22,
+        "musicname": "aaaa",
+        "creator": [2,25],
+        "album": [53],
+        "introduction": "bbbbbbbbb...",
+        "musicAvatar": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b5811871-acc8-4583-8399-cf0dc73591ab.jpg",
+        "lyric": "………………",
+        "resUrl": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b5811871-acc8-4583-8399-cf0dc73591ab.mp3",
+        "publishedTime": 1435645397,
+        "createdTime": 1712634453,
+        "updatedTime": 1712645397
+    },
+    {
+        "mid": 2345342,
+        "musicname": "eeee",
+        "creator": [24,453],
+        "album": [5345,4234],
+        "introduction": "bbsdfsdfgb...",
+        "musicAvatar": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b582231-acc8-4dfs-8234-cf0325391ab.jpg",
+        "lyric": "………………",
+        "resUrl": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b5811871-acc8-4583-8399-cf0dc73591ab.mp3",
+        "publishedTime": 1435645397,
+        "createdTime": 1712634452,
+        "updatedTime": 1712645397
+    }
+    ...
+    ]
 }
 ```
 
