@@ -21,4 +21,10 @@ public interface MusicService {
     void unshelveMusic(Integer mid);
 
     void shelveMusic(Integer mid);
+
+    void listed(Integer mid, Integer mlid);
+
+    Integer searchListedMusicRecord(Integer mid, Integer mlid);
+
+    void deleteMusicMap(Integer mapid);
 }

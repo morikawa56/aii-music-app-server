@@ -2,6 +2,7 @@ package xyz.mrkwcode.aiimusicserver.DAOs;
 
 import org.apache.ibatis.annotations.*;
 import xyz.mrkwcode.aiimusicserver.pojos.Music;
+import xyz.mrkwcode.aiimusicserver.pojos.MusicMap;
 
 import java.util.List;
 
@@ -31,4 +32,16 @@ public interface MusicMapper {
 
     @Delete("Delete from aii_music_musicinfo where mid=#{mid}")
     void deleteMusic(Integer mid);
+
+    @Insert("Insert into aii_music_musictolist(mid, mlid)" +
+            "values(#{mid}, #{mlid})")
+    void musicListed(Integer mid, Integer mlid);
+
+    @Select("Select * from aii_music_musictolist where mid=#{mid} and mlid=#{mlid}")
+    MusicMap searchListedMusicRecord(Integer mid, Integer mlid);
+
+    @Delete("Delete from aii_music_musictolist where mid=#{mapid}")
+    void deleteMusicMap(Integer mapid);
+
+
 }

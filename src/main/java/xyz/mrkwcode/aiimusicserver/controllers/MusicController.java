@@ -168,4 +168,20 @@ public class MusicController {
     public void shelve(@RequestParam Integer mid) {
         musicService.shelveMusic(mid);
     }
+
+    @PostMapping("/listed")
+    public void listed(@RequestParam Integer mid, @RequestParam Integer mlid) {
+        musicService.listed(mid, mlid);
+    }
+
+    @DeleteMapping("/listed")
+    public void deleteListed(@RequestParam Integer mid, @RequestParam Integer mlid) {
+        Integer mapid = musicService.searchListedMusicRecord(mid, mlid);
+        musicService.deleteMusicMap(mapid);
+    }
+
+    @PutMapping("/fav")
+    public void favourite() {
+
+    }
 }

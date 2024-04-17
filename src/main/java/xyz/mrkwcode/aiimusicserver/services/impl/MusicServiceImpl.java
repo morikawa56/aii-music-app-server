@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import xyz.mrkwcode.aiimusicserver.DAOs.CreatorMapper;
 import xyz.mrkwcode.aiimusicserver.DAOs.MusicMapper;
 import xyz.mrkwcode.aiimusicserver.pojos.Music;
+import xyz.mrkwcode.aiimusicserver.pojos.MusicMap;
 import xyz.mrkwcode.aiimusicserver.pojos.PageBean;
 import xyz.mrkwcode.aiimusicserver.services.MusicService;
 import xyz.mrkwcode.aiimusicserver.utils.ThreadLocalUtil;
@@ -83,5 +84,21 @@ public class MusicServiceImpl implements MusicService {
     @Override
     public void shelveMusic(Integer mid) {
         musicMapper.setshelveMusic(mid, 0);
+    }
+
+    @Override
+    public void listed(Integer mid, Integer mlid) {
+        musicMapper.musicListed(mid, mlid);
+    }
+
+    @Override
+    public Integer searchListedMusicRecord(Integer mid, Integer mlid) {
+        MusicMap musicMap = musicMapper.searchListedMusicRecord(mid, mlid);
+        return musicMap.getMapid();
+    }
+
+    @Override
+    public void deleteMusicMap(Integer mapid) {
+        musicMapper.deleteMusicMap(mapid);
     }
 }
