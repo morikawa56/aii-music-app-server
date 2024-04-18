@@ -11,12 +11,12 @@ import xyz.mrkwcode.aiimusicserver.pojos.Music;
 import xyz.mrkwcode.aiimusicserver.pojos.Musiclist;
 import xyz.mrkwcode.aiimusicserver.pojos.PageBean;
 import xyz.mrkwcode.aiimusicserver.services.MusiclistService;
+import xyz.mrkwcode.aiimusicserver.services.RecommendMusiclistService;
 import xyz.mrkwcode.aiimusicserver.utils.TcosUtil.TcosUtil;
+import xyz.mrkwcode.aiimusicserver.utils.ThreadLocalUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -26,6 +26,9 @@ import java.util.UUID;
 public class MusiclistController {
     @Autowired
     private MusiclistService musiclistService;
+
+    @Autowired
+    private RecommendMusiclistService recommendMusiclistService;
 
     private static final String COS_MLAVATAR_PATH = "aii-music/musiclistavatar/";
     @PostMapping
@@ -73,10 +76,12 @@ public class MusiclistController {
         return pgb;
     }
 
-    @GetMapping("/recommend")
-    public PageBean<Music> getRecommendMusic(Integer pageNum,
-                                             @RequestParam(required = false) Integer pageSize) {
-        PageBean<Music> pgb = musiclistService.getRecommendMusic(pageNum, Objects.requireNonNullElse(pageSize, 20));
+    @GetMapping("/recommend/list")
+    public List<Musiclist> getRecommendMusiclist() {
+        Map<String,Object> map = ThreadLocalUtil.get();
+        Integer userId = (Integer) map.get("uid");
+        List<Musiclist> pgb = recommendMusiclistService.recommendMusiclistByFavourite(userId);
         return pgb;
+        // return null;
     }
 }

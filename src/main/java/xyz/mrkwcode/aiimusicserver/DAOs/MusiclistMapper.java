@@ -28,4 +28,7 @@ public interface MusiclistMapper {
     @Select("Select aii_music_musicinfo.mid, aii_music_musicinfo.musicname, aii_music_musicinfo.creator, aii_music_musicinfo.album, aii_music_musicinfo.introduction, aii_music_musicinfo.music_avatar, aii_music_musicinfo.lyric, aii_music_musicinfo.is_unshelved, aii_music_musicinfo.published_time, aii_music_musicinfo.res_url, aii_music_musicinfo.created_time, aii_music_musicinfo.updated_time " +
             "from aii_music_musicinfo left join aii_music_musictolist on aii_music_musicinfo.mid=aii_music_musictolist.mid where aii_music_musictolist.mlid=#{mlid}")
     List<Music> getMusicFromList(Integer pageNum, Integer pageSize, Integer mlid);
+
+    @Select("Select * from aii_music_musiclist where mlid=#{mlid}")
+    Musiclist findByMlid(Integer mlid);
 }

@@ -7,15 +7,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/**
- * @author root
- * @Description:核心算法
- * @Package com.supermarket.product.core
- * @date 2021/4/22 16:12
- */
 public class CoreMath {
-    /**
-     * 推荐
+    /** 推荐
      * @param userId 用户id
      * @param list 推荐的idList集合
      * @return
