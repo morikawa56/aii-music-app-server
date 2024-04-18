@@ -8,13 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import xyz.mrkwcode.aiimusicserver.annos.ResponseResult;
 import xyz.mrkwcode.aiimusicserver.exceptions.UniverCustomException;
-import xyz.mrkwcode.aiimusicserver.pojos.Music;
-import xyz.mrkwcode.aiimusicserver.pojos.MusicReq;
-import xyz.mrkwcode.aiimusicserver.pojos.PageBean;
-import xyz.mrkwcode.aiimusicserver.pojos.UnshelveReq;
+import xyz.mrkwcode.aiimusicserver.pojos.*;
 import xyz.mrkwcode.aiimusicserver.services.CreatorService;
 import xyz.mrkwcode.aiimusicserver.services.MusicService;
 import xyz.mrkwcode.aiimusicserver.utils.TcosUtil.TcosUtil;
+import xyz.mrkwcode.aiimusicserver.utils.ThreadLocalUtil;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -25,6 +23,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -92,7 +91,11 @@ public class MusicController {
     }
 
     @GetMapping
-    public PageBean<Music> getMusicList(Integer pageNum,@RequestParam(required = false) Integer pageSize, @RequestParam(required = false) String musicname, @RequestParam(required = false) String creator, @RequestParam(required = false) Boolean mode) {
+    public PageBean<Music> getMusicList(Integer pageNum,
+                                        @RequestParam(required = false) Integer pageSize,
+                                        @RequestParam(required = false) String musicname,
+                                        @RequestParam(required = false) String creator,
+                                        @RequestParam(required = false) Boolean mode) {
         Integer cid = creatorService.findByCreatorName(creator).getCid();
         // System.out.println(cid);
         return musicService.getMusicList(pageNum, Objects.requireNonNullElse(pageSize, 20), musicname, String.valueOf(cid), Objects.requireNonNullElse(mode, false));
@@ -181,7 +184,12 @@ public class MusicController {
     }
 
     @PutMapping("/fav")
-    public void favourite() {
+    public void musicFavourite(@RequestParam Integer mid) {
+        musicService.musicFavourite(mid);
+    }
 
+    @DeleteMapping("/fav")
+    public void delMusicFavourite(@RequestParam Integer mid) {
+        musicService.delMusicFavourite(mid);
     }
 }

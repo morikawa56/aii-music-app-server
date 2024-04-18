@@ -27,4 +27,8 @@ public interface MusicService {
     Integer searchListedMusicRecord(Integer mid, Integer mlid);
 
     void deleteMusicMap(Integer mapid);
+
+    void musicFavourite(Integer mid);
+
+    void delMusicFavourite(Integer mid);
 }

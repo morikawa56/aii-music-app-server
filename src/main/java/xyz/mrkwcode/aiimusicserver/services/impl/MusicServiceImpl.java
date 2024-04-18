@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.mrkwcode.aiimusicserver.DAOs.CreatorMapper;
 import xyz.mrkwcode.aiimusicserver.DAOs.MusicMapper;
+import xyz.mrkwcode.aiimusicserver.pojos.Favourite;
 import xyz.mrkwcode.aiimusicserver.pojos.Music;
 import xyz.mrkwcode.aiimusicserver.pojos.MusicMap;
 import xyz.mrkwcode.aiimusicserver.pojos.PageBean;
@@ -100,5 +101,23 @@ public class MusicServiceImpl implements MusicService {
     @Override
     public void deleteMusicMap(Integer mapid) {
         musicMapper.deleteMusicMap(mapid);
+    }
+
+    @Override
+    public void musicFavourite(Integer mid) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        Favourite favourite = new Favourite();
+        favourite.setUid(uid);
+        favourite.setIsMusiclist(false);
+        favourite.setMid(mid);
+        musicMapper.musicFavourite(favourite);
+    }
+
+    @Override
+    public void delMusicFavourite(Integer mid) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        musicMapper.delMusicFavourite(uid, mid);
     }
 }

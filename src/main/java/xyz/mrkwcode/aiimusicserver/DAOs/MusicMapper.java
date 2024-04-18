@@ -1,6 +1,7 @@
 package xyz.mrkwcode.aiimusicserver.DAOs;
 
 import org.apache.ibatis.annotations.*;
+import xyz.mrkwcode.aiimusicserver.pojos.Favourite;
 import xyz.mrkwcode.aiimusicserver.pojos.Music;
 import xyz.mrkwcode.aiimusicserver.pojos.MusicMap;
 
@@ -40,8 +41,13 @@ public interface MusicMapper {
     @Select("Select * from aii_music_musictolist where mid=#{mid} and mlid=#{mlid}")
     MusicMap searchListedMusicRecord(Integer mid, Integer mlid);
 
-    @Delete("Delete from aii_music_musictolist where mid=#{mapid}")
+    @Delete("Delete from aii_music_musictolist where mapid=#{mapid}")
     void deleteMusicMap(Integer mapid);
 
+    @Insert("Insert into aii_music_favourite(uid, is_musiclist, mid, created_time, updated_time)" +
+            "values(#{uid}, #{isMusiclist}, #{mid}, now(), now())")
+    void musicFavourite(Favourite favourite);
 
+    @Delete("Delete from aii_music_favourite where mid=#{mid} and uid=#{uid}")
+    void delMusicFavourite(Integer uid, Integer mid);
 }
