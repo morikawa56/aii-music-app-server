@@ -84,4 +84,21 @@ public class MusiclistController {
         return pgb;
         // return null;
     }
+
+    @PostMapping("/fav")
+    public void favMusiclist(@RequestParam Integer mlid) {
+        musiclistService.favMusiclist(mlid);
+    }
+
+    @DeleteMapping("/fav")
+    public void delFavMusiclist(@RequestParam Integer mlid) {
+        musiclistService.delFavMusiclist(mlid);
+    }
+
+    @GetMapping("/recommend")
+    public List<Music> recommendMusiclist() {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        return recommendMusiclistService.recommendMusic(uid);
+    }
 }

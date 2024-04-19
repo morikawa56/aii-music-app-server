@@ -5,6 +5,8 @@ import xyz.mrkwcode.aiimusicserver.pojos.User;
 public interface UserService {
     // 查找用户
     User findByUsername(String username);
+
+    User findByUid(Integer uid);
     // 注册
     void signup(String username, String password);
     // 更新信息

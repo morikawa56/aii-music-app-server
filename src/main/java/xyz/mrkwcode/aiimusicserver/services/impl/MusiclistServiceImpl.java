@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.mrkwcode.aiimusicserver.DAOs.MusiclistMapper;
+import xyz.mrkwcode.aiimusicserver.pojos.Favourite;
 import xyz.mrkwcode.aiimusicserver.pojos.Music;
 import xyz.mrkwcode.aiimusicserver.pojos.Musiclist;
 import xyz.mrkwcode.aiimusicserver.pojos.PageBean;
@@ -79,5 +80,23 @@ public class MusiclistServiceImpl implements MusiclistService {
         pgb.setTotal(p.getTotal());
         pgb.setItems(p.getResult());
         return pgb;
+    }
+
+    @Override
+    public void favMusiclist(Integer mlid) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        Favourite favourite = new Favourite();
+        favourite.setUid(uid);
+        favourite.setIsMusiclist(true);
+        favourite.setMlid(mlid);
+        musiclistMapper.favMusiclist(favourite);
+    }
+
+    @Override
+    public void delFavMusiclist(Integer mlid) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        musiclistMapper.delFavMusiclist(uid, mlid);
     }
 }

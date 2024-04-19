@@ -41,4 +41,7 @@ public interface UserMapper {
 
     @Update("Update aii_music_user set is_banned=#{isBanned},updated_time=#{updatedTime} where uid=#{uid}")
     void banUser(Integer uid, Boolean isBanned, Timestamp updatedTime);
+
+    @Select("Select * from aii_music_user where uid=#{uid}")
+    User findByUid(Integer uid);
 }

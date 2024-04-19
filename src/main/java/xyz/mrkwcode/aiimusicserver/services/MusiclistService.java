@@ -17,4 +17,8 @@ public interface MusiclistService {
     PageBean<Musiclist> listedMusiclist(Integer pageNum, Integer pageSize, Integer mlid, Integer uid, String musiclistname, String style, Boolean mode);
 
     PageBean<Music> getMusicFromList(Integer pageNum, Integer pageSize, Integer mlid);
+
+    void favMusiclist(Integer mlid);
+
+    void delFavMusiclist(Integer mlid);
 }

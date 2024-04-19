@@ -1,22 +1,23 @@
 package xyz.mrkwcode.aiimusicserver.services.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import xyz.mrkwcode.aiimusicserver.DAOs.*;
-import xyz.mrkwcode.aiimusicserver.pojos.Favourite;
-import xyz.mrkwcode.aiimusicserver.pojos.Music;
+import xyz.mrkwcode.aiimusicserver.pojos.*;
 // import xyz.mrkwcode.aiimusicserver.services.RecommendMusiclistService;
-import xyz.mrkwcode.aiimusicserver.pojos.MusicToList;
-import xyz.mrkwcode.aiimusicserver.pojos.Musiclist;
 import xyz.mrkwcode.aiimusicserver.services.RecommendMusiclistService;
+import xyz.mrkwcode.aiimusicserver.utils.ThreadLocalUtil;
 import xyz.mrkwcode.aiimusicserver.utils.recommendUtil.core.CoreMath;
 import xyz.mrkwcode.aiimusicserver.utils.recommendUtil.dto.ProductDTO;
 import xyz.mrkwcode.aiimusicserver.utils.recommendUtil.dto.RelateDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,19 +42,23 @@ public class RecommendServiceImpl implements RecommendMusiclistService {
         List<RelateDTO> relateDTOList = Lists.newArrayList();
         List<Favourite> favouriteList = favouriteMapper.allFavourite();
         for (Favourite favourite : favouriteList) {
-            RelateDTO relateDTO = new RelateDTO();
-            relateDTO.setUserId(favourite.getUid());
-            relateDTO.setProductId(favourite.getMid());
-            //1-10随机数模拟用户听歌次数
-            relateDTO.setIndex((int)(Math.random()*10+1));
-            //relateDTO.setIndex(1);
-            relateDTOList.add(relateDTO);
+            if(favourite.getIsMusiclist() == false) {
+                RelateDTO relateDTO = new RelateDTO();
+                relateDTO.setUserId(favourite.getUid());
+                relateDTO.setProductId(favourite.getMid());
+                //1-10随机数模拟用户听歌次数
+                relateDTO.setIndex((int)(Math.random()*10+1));
+                //relateDTO.setIndex(1);
+                relateDTOList.add(relateDTO);
+            }
         }
         if(CollectionUtils.isEmpty(relateDTOList)){
             System.out.println("--------------------List<RelateDTO>为空！");
         }
+        // System.out.println(relateDTOList);
         return relateDTOList;
     }
+
     @Override
     public List<ProductDTO> getMusicData() {
         List<ProductDTO> productDTOList = new ArrayList<>();
@@ -66,6 +71,7 @@ public class RecommendServiceImpl implements RecommendMusiclistService {
         if(CollectionUtils.isEmpty(productDTOList)){
             System.out.println("----------------------List<ProductDTO>为空！");
         }
+        // System.out.println(productDTOList);
         return productDTOList;
     }
 
@@ -88,69 +94,10 @@ public class RecommendServiceImpl implements RecommendMusiclistService {
         for (Integer productId : productIdList) {
             musicList.add(musicMapper.findByMid(productId));
         }
+        System.out.println("aaaaaaa=========" + musicList);
         return musicList;
     }
-    //
-    // @Override
-    // public List<RelateDTO> getRankData() {
-    //     List<RelateDTO> relateList = Lists.newArrayList();
-    //     List<Rank> rankList = rankMapper.selectRanks();
-    //     for (Rank rank : rankList) {
-    //         RelateDTO relateDTO = new RelateDTO();
-    //         relateDTO.setUserId(rank.getConsumerId().intValue());
-    //         relateDTO.setProductId(rank.getSongListId().intValue());
-    //         relateDTO.setIndex(rank.getScore());
-    //         relateList.add(relateDTO);
-    //     }
-    //     if(CollectionUtils.isEmpty(relateList)){
-    //         System.out.println("--------------------List<RelateDTO>为空！");
-    //     }
-    //     return relateList;
-    // }
-    //
-    //
-    // @Override
-    // public List<ProductDTO> getMusiclistData() {
-    //     List<ProductDTO> productDTOList = new ArrayList<>();
-    //     List<SongList> songLists = songListMapper.allSongList();
-    //     for (SongList songList : songLists) {
-    //         ProductDTO productDTO = new ProductDTO();
-    //         productDTO.setProductId(songList.getId());
-    //         productDTOList.add(productDTO);
-    //     }
-    //     if(CollectionUtils.isEmpty(productDTOList)){
-    //         System.out.println("----------------------List<ProductDTO>为空！");
-    //     }
-    //     return productDTOList;
-    // }
-    //
-    //
-    // @Override
-    // public List<SongList> recommendMusiclistByRank(Integer userId){
-    //     CoreMath coreMath = new CoreMath();
-    //     List<RelateDTO> data = getRankData();
-    //     //执行推荐算法
-    //     List<Integer> recommendations = coreMath.recommend(userId, data);
-    //     //根据返回的商品ids 从getProductData()进行过滤出 所有ProductDTO
-    //     List<ProductDTO> productDTOS = getSongListData();
-    //     List<ProductDTO> productDTOList= productDTOS.stream().filter(e->recommendations.contains(e.getProductId())).collect(Collectors.toList());
-    //     //如果推荐id为空
-    //     if(CollectionUtils.isEmpty(productDTOList)){
-    //         System.out.println("-----------推荐的歌单id集为空！");
-    //         return songListMapper.allSongList();
-    //     }
-    //     List<SongList> songList = new ArrayList<>();
-    //     List<Integer> productIdList = productDTOList.stream().map(e -> e.getProductId()).collect(Collectors.toList());
-    //     for (Integer productId : productIdList) {
-    //         SongList songList1 = songListMapper.selectByPrimaryKey(productId);
-    //         songList.add(songList1);
-    //     }
-    //     if(CollectionUtils.isEmpty(songList)){
-    //
-    //         return songListMapper.allSongList();
-    //     }
-    //     return songList;
-    // }
+
     @Override
     public List<Musiclist> recommendMusiclistByFavourite(Integer uid){
         //获取推荐歌曲

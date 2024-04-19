@@ -67,7 +67,7 @@ public class MusicServiceImpl implements MusicService {
         musicMapper.updateMusicRes(mid, resUrl);
     }
 
-    @Override
+@Override
     public void updateMusicAvatar(Integer mid, String musicAvatar) {
         musicMapper.updateMusicAvatar(mid, musicAvatar);
     }

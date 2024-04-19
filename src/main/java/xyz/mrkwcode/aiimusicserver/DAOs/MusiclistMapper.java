@@ -1,9 +1,7 @@
 package xyz.mrkwcode.aiimusicserver.DAOs;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
+import xyz.mrkwcode.aiimusicserver.pojos.Favourite;
 import xyz.mrkwcode.aiimusicserver.pojos.Music;
 import xyz.mrkwcode.aiimusicserver.pojos.Musiclist;
 
@@ -31,4 +29,11 @@ public interface MusiclistMapper {
 
     @Select("Select * from aii_music_musiclist where mlid=#{mlid}")
     Musiclist findByMlid(Integer mlid);
+
+    @Insert("Insert into aii_music_favourite(uid, is_musiclist, mlid, created_time, updated_time)" +
+            "values(#{uid}, #{isMusiclist}, #{mlid}, now(), now())")
+    void favMusiclist(Favourite favourite);
+
+    @Delete("Delete from aii_music_favourite where mlid=#{mlid} and uid=#{uid}")
+    void delFavMusiclist(Integer uid, Integer mlid);
 }

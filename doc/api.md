@@ -788,9 +788,9 @@ uid=6&isBanned=true
 }
 ```
 
-### 5. 下架歌曲
+### 6. 下架歌曲
 
-#### 5.1 基本信息
+#### 6.1 基本信息
 
 > 请求路径：/api/music/unshelve
 >
@@ -798,7 +798,7 @@ uid=6&isBanned=true
 >
 > 接口描述：该接口用于临时或彻底删除某个歌曲
 
-#### 5.2 请求参数
+#### 6.2 请求参数
 
 请求参数格式：application/json
 
@@ -819,56 +819,6 @@ uid=6&isBanned=true
 ```
 
 
-
-#### 5.3 响应数据
-
-响应数据类型：application/json
-
-响应参数说明：
-
-| 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
-| ------- | ------ | -------- | ------ | --------------------- | -------- |
-| code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
-| status  | number | 必须     |        | HTTP状态码            |          |
-| message | string | 非必须   |        | 提示信息              |          |
-| data    | object | 非必须   |        | 返回的数据            |          |
-
-响应数据样例：
-
-```json
-{
-    "code": 0,
-    "status": 200,
-    "message": "操作成功",
-    "data": null
-}
-```
-
-### 6. 重新上架歌曲
-
-#### 6.1 基本信息
-
-> 请求路径：/api/music/shelve
->
-> 请求方式：DELETE
->
-> 接口描述：该接口用于重新上架被临时下架的歌曲
-
-#### 6.2 请求参数
-
-请求参数格式：x-www-form-urlencoded
-
-请求参数说明：
-
-| 参数名称 | 说明   | 类型   | 是否必须 | 备注 |      |
-| -------- | ------ | ------ | -------- | ---- | ---- |
-| mid      | 主键ID | number | 是       |      |      |
-
-请求数据样例：
-
-```shell
-mid=5
-```
 
 #### 6.3 响应数据
 
@@ -894,31 +844,30 @@ mid=5
 }
 ```
 
-### 7. 添加歌曲到歌单
+### 7. 重新上架歌曲
 
 #### 7.1 基本信息
 
-> 请求路径：/api/music/listed
+> 请求路径：/api/music/shelve
 >
-> 请求方式：POST
+> 请求方式：DELETE
 >
-> 接口描述：该接口添加一首歌曲到歌单中
+> 接口描述：该接口用于重新上架被临时下架的歌曲
 
 #### 7.2 请求参数
 
-请求参数格式：multipart/form-data
+请求参数格式：x-www-form-urlencoded
 
 请求参数说明：
 
 | 参数名称 | 说明   | 类型   | 是否必须 | 备注 |      |
 | -------- | ------ | ------ | -------- | ---- | ---- |
-| mid      | 音乐ID | number | 是       |      |      |
-| mlid     | 歌单ID | number | 是       |      |      |
+| mid      | 主键ID | number | 是       |      |      |
 
 请求数据样例：
 
 ```shell
-mid=5&mlid=20
+mid=5
 ```
 
 #### 7.3 响应数据
@@ -945,15 +894,15 @@ mid=5&mlid=20
 }
 ```
 
-### 8. 收藏歌曲
+### 8. 添加歌曲到歌单
 
 #### 8.1 基本信息
 
-> 请求路径：/api/music/fav
+> 请求路径：/api/music/listed
 >
-> 请求方式：PUT
+> 请求方式：POST
 >
-> 接口描述：该接口收藏一首歌曲
+> 接口描述：该接口添加一首歌曲到歌单中
 
 #### 8.2 请求参数
 
@@ -963,12 +912,13 @@ mid=5&mlid=20
 
 | 参数名称 | 说明   | 类型   | 是否必须 | 备注 |      |
 | -------- | ------ | ------ | -------- | ---- | ---- |
-| mid      | 歌曲ID | number | 是       |      |      |
+| mid      | 音乐ID | number | 是       |      |      |
+| mlid     | 歌单ID | number | 是       |      |      |
 
 请求数据样例：
 
 ```shell
-mid=20
+mid=5&mlid=20
 ```
 
 #### 8.3 响应数据
@@ -995,15 +945,15 @@ mid=20
 }
 ```
 
-### 9. 删除歌单歌曲
+### 9. 收藏歌曲
 
 #### 9.1 基本信息
 
-> 请求路径：/api/music/listed
+> 请求路径：/api/music/fav
 >
-> 请求方式：DELETE
+> 请求方式：PUT
 >
-> 接口描述：该接口删除歌单指定歌曲
+> 接口描述：该接口收藏一首歌曲
 
 #### 9.2 请求参数
 
@@ -1013,13 +963,12 @@ mid=20
 
 | 参数名称 | 说明   | 类型   | 是否必须 | 备注 |      |
 | -------- | ------ | ------ | -------- | ---- | ---- |
-| mid      | 音乐ID | number | 是       |      |      |
-| mlid     | 歌单ID | number | 是       |      |      |
+| mid      | 歌曲ID | number | 是       |      |      |
 
 请求数据样例：
 
 ```shell
-mid=5&mlid=20
+mid=20
 ```
 
 #### 9.3 响应数据
@@ -1046,9 +995,60 @@ mid=5&mlid=20
 }
 ```
 
-### 10. 取消收藏歌曲
+### 10. 删除歌单歌曲
 
 #### 10.1 基本信息
+
+> 请求路径：/api/music/listed
+>
+> 请求方式：DELETE
+>
+> 接口描述：该接口删除歌单指定歌曲
+
+#### 10.2 请求参数
+
+请求参数格式：multipart/form-data
+
+请求参数说明：
+
+| 参数名称 | 说明   | 类型   | 是否必须 | 备注 |      |
+| -------- | ------ | ------ | -------- | ---- | ---- |
+| mid      | 音乐ID | number | 是       |      |      |
+| mlid     | 歌单ID | number | 是       |      |      |
+
+请求数据样例：
+
+```shell
+mid=5&mlid=20
+```
+
+#### 10.3 响应数据
+
+响应数据类型：application/json
+
+响应参数说明：
+
+| 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
+| ------- | ------ | -------- | ------ | --------------------- | -------- |
+| code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| status  | number | 必须     |        | HTTP状态码            |          |
+| message | string | 非必须   |        | 提示信息              |          |
+| data    | object | 非必须   |        | 返回的数据            |          |
+
+响应数据样例：
+
+```json
+{
+    "code": 0,
+    "status": 200,
+    "message": "操作成功",
+    "data": null
+}
+```
+
+### 11. 取消收藏歌曲
+
+#### 11.1 基本信息
 
 > 请求路径：/api/music/fav
 >
@@ -1056,7 +1056,7 @@ mid=5&mlid=20
 >
 > 接口描述：该接口取消收藏一首歌曲
 
-#### 10.2 请求参数
+#### 11.2 请求参数
 
 请求参数格式：multipart/form-data
 
@@ -1072,7 +1072,7 @@ mid=5&mlid=20
 mid=20
 ```
 
-#### 10.3 响应数据
+#### 11.3 响应数据
 
 响应数据类型：application/json
 
@@ -1432,11 +1432,11 @@ pageNum=1&pageSize=10&mlid=3
 
 
 
-### 6. 获得推荐歌单
+### 6. 获得推荐歌单列表
 
 #### 6.1 基本信息
 
-> 请求路径：/api/musiclist/recommend
+> 请求路径：/api/musiclist/recommend/list
 >
 > 请求方式：GET
 >
@@ -1448,19 +1448,11 @@ pageNum=1&pageSize=10&mlid=3
 
 请求参数说明：
 
-| 参数名称 | 说明   | 类型   | 是否必须 | 备注 |      |
-| -------- | ------ | ------ | -------- | ---- | ---- |
-| pageNum   | 当前页码           | number  | 是       |             ||
-| pageSize  | 每页条数           | number  | 否      | 默认为20 ||
-| uid      | 用户ID | number | 是      |      |      |
+无
 
 请求数据样例：
 
-````shell
-pageNum=1&pageSize=10&uid=3
-````
-
-
+无
 
 #### 6.3 响应数据
 
@@ -1468,21 +1460,18 @@ pageNum=1&pageSize=10&uid=3
 
 响应参数说明：
 
-| 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
+| 名称             | 类型      | 是否必须 | 默认值 | 备注                  | 其他信息 |
 | ------- | ------ | -------- | ------ | --------------------- | -------- |
-| code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
-| status  | number | 必须     |        | HTTP状态码            |          |
-| message | string | 非必须   |        | 提示信息              |          |
-| data    | object | 非必须   |        | 返回的数据            | JSON数组 |
-| \|-mid           | number    | 非必须   |        | 音乐主键ID            |          |
-| \|-musicname     | string    | 非必须   |        | 音乐名称              |          |
-| \|-creator       | string    | 非必须   |        | 创作者ID              | JSON     |
-| \|-album         | string    | 非必须   |        | 专辑ID                | JSON     |
-| \|-introduction  | string    | 非必须   |        | 歌曲介绍              |          |
-| \|-musicAvatar   | string    | 非必须   |        | 音乐图片地址          |          |
-| \|-lyric         | string    | 非必须   |        | 歌词                  |          |
-| \|-resUrl        | string    | 非必须   |        | 资源地址              |          |
-| \|-publishedTime | timestamp | 非必须   |        | 发行时间              |          |
+| code             | number    | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| status           | number    | 必须     |        | HTTP状态码            |          |
+| message          | string    | 非必须   |        | 提示信息              |          |
+| data             | object    | 非必须   |        | 返回的数据            |          |
+| \|-mlid          | number    | 非必须   |        | 歌单ID                |          |
+| \|-musiclistname | string    | 非必须   |        | 歌单名称              |          |
+| \|-uid           | number    | 非必须   |        | 创建用户ID            |          |
+| \|-musiclist_pic | string    | 非必须   |        | 歌单图片地址          |          |
+| \|-introduction  | string    | 非必须   |        | 歌单介绍              |          |
+| \|-style         | string    | 非必须   |        | 歌单风格              |          |
 | \|-createdTime   | timestamp | 非必须   |        | 创建时间              |          |
 | \|-updatedTime   | timestamp | 非必须   |        | 更新时间              |          |
 
@@ -1495,32 +1484,16 @@ pageNum=1&pageSize=10&uid=3
     "message": "操作成功",
     "data": [
         {
-            "mid": 22,
-            "musicname": "aaaa",
-            "creator": [2,25],
-            "album": [53],
-            "introduction": "bbbbbbbbb...",
-            "musicAvatar": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b5811871-acc8-4583-8399-cf0dc73591ab.jpg",
-            "lyric": "………………",
-            "resUrl": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b5811871-acc8-4583-8399-cf0dc73591ab.mp3",
-            "publishedTime": 1435645397,
-            "createdTime": 1712634453,
-            "updatedTime": 1712645397
+            "mlid": 5,
+            "musiclistname": "hahaha",
+            "uid": 10,
+            "musiclist_pic": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b5811871-acc8-4583-8399-cf0dc73591ab.jpg",
+            "introduction": ".....",
+            "style": "...",
+            "created_time": 1435645397,
+            "updated_time": 1435645397
         },
-        {
-            "mid": 2345342,
-            "musicname": "eeee",
-            "creator": [24,453],
-            "album": [5345,4234],
-            "introduction": "bbsdfsdfgb...",
-            "musicAvatar": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b582231-acc8-4dfs-8234-cf0325391ab.jpg",
-            "lyric": "………………",
-            "resUrl": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b5811871-acc8-4583-8399-cf0dc73591ab.mp3",
-            "publishedTime": 1435645397,
-            "createdTime": 1712634452,
-            "updatedTime": 1712645397
-        }
-        ...
+        ......
     ]
 }
 ```
@@ -1625,3 +1598,91 @@ mlid=20
 }
 ```
 
+### 9. 获得推荐歌单
+
+#### 9.1 基本信息
+
+> 请求路径：/api/musiclist/recommend
+>
+> 请求方式：GET
+>
+> 接口描述：该接口导出推荐歌单歌曲内容
+
+#### 9.2 请求参数
+
+请求参数格式：x-www-form-urlencoded
+
+请求参数说明：
+
+无
+
+请求数据样例：
+
+无
+
+#### 9.3 响应数据
+
+响应数据类型：application/json
+
+响应参数说明：
+
+| 名称             | 类型      | 是否必须 | 默认值 | 备注                  | 其他信息 |
+| ---------------- | --------- | -------- | ------ | --------------------- | -------- |
+| code             | number    | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| status           | number    | 必须     |        | HTTP状态码            |          |
+| message          | string    | 非必须   |        | 提示信息              |          |
+| data             | object    | 非必须   |        | 返回的数据            | JSON数组 |
+| \|-mid           | number    | 非必须   |        | 音乐主键ID            |          |
+| \|-musicname     | string    | 非必须   |        | 音乐名称              |          |
+| \|-creator       | string    | 非必须   |        | 创作者ID              | JSON     |
+| \|-album         | string    | 非必须   |        | 专辑ID                | JSON     |
+| \|-introduction  | string    | 非必须   |        | 歌曲介绍              |          |
+| \|-musicAvatar   | string    | 非必须   |        | 音乐图片地址          |          |
+| \|-lyric         | string    | 非必须   |        | 歌词                  |          |
+| \|-resUrl        | string    | 非必须   |        | 资源地址              |          |
+| \|-publishedTime | timestamp | 非必须   |        | 发行时间              |          |
+| \|-createdTime   | timestamp | 非必须   |        | 创建时间              |          |
+| \|-updatedTime   | timestamp | 非必须   |        | 更新时间              |          |
+
+响应数据样例：
+
+```json
+{
+    "code": 0,
+    "status": 200,
+    "message": "操作成功",
+    "data": [
+        {
+            "mid": 22,
+            "musicname": "aaaa",
+            "creator": [2,25],
+            "album": [53],
+            "introduction": "bbbbbbbbb...",
+            "musicAvatar": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b5811871-acc8-4583-8399-cf0dc73591ab.jpg",
+            "lyric": "………………",
+            "resUrl": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b5811871-acc8-4583-8399-cf0dc73591ab.mp3",
+            "publishedTime": 1435645397,
+            "createdTime": 1712634453,
+            "updatedTime": 1712645397
+        },
+        {
+            "mid": 2345342,
+            "musicname": "eeee",
+            "creator": [24,453],
+            "album": [5345,4234],
+            "introduction": "bbsdfsdfgb...",
+            "musicAvatar": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b582231-acc8-4dfs-8234-cf0325391ab.jpg",
+            "lyric": "………………",
+            "resUrl": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/b5811871-acc8-4583-8399-cf0dc73591ab.mp3",
+            "publishedTime": 1435645397,
+            "createdTime": 1712634452,
+            "updatedTime": 1712645397
+        }
+        ...
+    ]
+}
+```
+
+
+
+## 四、管理员功能

@@ -30,6 +30,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findByUid(Integer uid) {
+        return userMapper.findByUid(uid);
+    }
+
+    @Override
     public void signup(String username, String password) {
         // 对密码进行加密
         String md5Password = Md5Util.getMD5String(password);

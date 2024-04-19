@@ -16,6 +16,7 @@ public class CoreMath {
     public List<Integer> recommend(Integer userId, List<RelateDTO> list) {
         //找到最近邻用户id
         Map<Double, Integer> distances = computeNearestNeighbor(userId, list);
+        // System.out.println("rrr" + distances);
         //取出相似度最近的用户id
         Integer nearest = distances.values().iterator().next();
         Iterator<Integer> iterator = distances.values().iterator();
@@ -48,12 +49,15 @@ public class CoreMath {
      */
     private Map<Double, Integer> computeNearestNeighbor(Integer userId, List<RelateDTO> list) {
         Map<Integer, List<RelateDTO>> userMap = list.stream().collect(Collectors.groupingBy(RelateDTO::getUserId));
+        // System.out.println("ccc" + userMap);
         //treemap是从小到大排好序的
         Map<Double, Integer> distances = new TreeMap<>();
         userMap.forEach((k,v)->{
+            // System.out.println("fff" + k.intValue() + userId.intValue());
             if(k.intValue() != userId.intValue()){
                 double distance = pearson_dis(v,userMap.get(userId));
                 distances.put(distance, k);
+
             }
         });
         return distances;

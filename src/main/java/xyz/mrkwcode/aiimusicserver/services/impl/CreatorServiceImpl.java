@@ -17,4 +17,8 @@ public class CreatorServiceImpl implements CreatorService {
     public Creator findByCreatorName(String creatorname) {
         return creatorMapper.findByCreatorName(creatorname);
     }
+
+    public Creator ifExistFindByUid(Integer uid) {
+        return creatorMapper.ifExistFindByUid(uid);
+    }
 }

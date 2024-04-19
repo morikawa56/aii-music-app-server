@@ -11,6 +11,7 @@ import xyz.mrkwcode.aiimusicserver.exceptions.UniverCustomException;
 import xyz.mrkwcode.aiimusicserver.pojos.*;
 import xyz.mrkwcode.aiimusicserver.services.CreatorService;
 import xyz.mrkwcode.aiimusicserver.services.MusicService;
+import xyz.mrkwcode.aiimusicserver.services.UserService;
 import xyz.mrkwcode.aiimusicserver.utils.TcosUtil.TcosUtil;
 import xyz.mrkwcode.aiimusicserver.utils.ThreadLocalUtil;
 
@@ -39,6 +40,9 @@ public class MusicController {
     @Autowired
     private CreatorService creatorService;
 
+    @Autowired
+    private UserService userService;
+
     private static final String COS_MRES_PATH = "aii-music/musicres/";
     private static final String COS_MAVATAR_PATH = "aii-music/musicavatar/";
 
@@ -46,9 +50,13 @@ public class MusicController {
     public void addMusic(HttpServletRequest req, // 音乐信息主干
                          @RequestParam("res") MultipartFile resource,
                          @RequestParam("musicAvatar") MultipartFile musicAvatar) throws IOException {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        User loginUser = userService.findByUid(uid);
+        if(loginUser.getPermission() != "admin" && loginUser.getPermission() !="creator") throw new UniverCustomException(500, "普通用户没有权限上传音乐");
 
         if(req.getParameter("musicname").isEmpty() || req.getParameter("musicname").matches("\s")) throw new UniverCustomException(500, "请填写音乐名称！");
-        if(req.getParameter("creator").isEmpty() || req.getParameter("creator").matches("\s")) throw new UniverCustomException(500, "请填写创作者信息！");
+        if(loginUser.getPermission() !="creator" && (req.getParameter("creator").isEmpty() || req.getParameter("creator").matches("\s"))) throw new UniverCustomException(500, "请填写创作者信息！");
         if(req.getParameter("album").isEmpty() || req.getParameter("album").matches("\s")) throw new UniverCustomException(500, "请填写专辑信息！");
         if(req.getParameter("publishedTime").isEmpty() || req.getParameter("publishedTime").matches("\s")) throw new UniverCustomException(500, "请填写发行日期！");
 
@@ -192,4 +200,6 @@ public class MusicController {
     public void delMusicFavourite(@RequestParam Integer mid) {
         musicService.delMusicFavourite(mid);
     }
+
+
 }
