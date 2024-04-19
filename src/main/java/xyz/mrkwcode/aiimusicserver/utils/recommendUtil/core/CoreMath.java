@@ -8,11 +8,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class CoreMath {
-    /** 推荐
-     * @param userId 用户id
-     * @param list 推荐的idList集合
-     * @return
-     */
     public List<Integer> recommend(Integer userId, List<RelateDTO> list) {
         //找到最近邻用户id
         Map<Double, Integer> distances = computeNearestNeighbor(userId, list);
@@ -41,12 +36,6 @@ public class CoreMath {
         return recommendList;
     }
 
-    /**
-     * 在给定userId的情况下，计算其他用户和它的相关系数并排序
-     * @param userId
-     * @param list
-     * @return
-     */
     private Map<Double, Integer> computeNearestNeighbor(Integer userId, List<RelateDTO> list) {
         Map<Integer, List<RelateDTO>> userMap = list.stream().collect(Collectors.groupingBy(RelateDTO::getUserId));
         // System.out.println("ccc" + userMap);
@@ -63,13 +52,6 @@ public class CoreMath {
         return distances;
     }
 
-    /**
-     * 计算两个序列间的相关系数
-     *
-     * @param xList 其他用户的数据集
-     * @param yList 当前用户的数据集
-     * @return
-     */
     private double pearson_dis(List<RelateDTO> xList, List<RelateDTO> yList) {
         List<Integer> xs= Lists.newArrayList();
         List<Integer> ys= Lists.newArrayList();
@@ -84,14 +66,6 @@ public class CoreMath {
         return getRelate(xs,ys);
     }
 
-    /**
-     * 方法描述: 皮尔森（pearson）相关系数计算
-     * (x1,y1) 理解为 a 用户对 x 商品的点击次数和对 y 商品的点击次数
-     * @param xs
-     * @param ys
-     * @Return {@link Double}
-     * @throws
-     */
     public static Double getRelate(List<Integer> xs, List<Integer> ys){
         int n=xs.size();
         double Ex= xs.stream().mapToDouble(x->x).sum();
