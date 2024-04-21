@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import xyz.mrkwcode.aiimusicserver.annos.Gender;
 import xyz.mrkwcode.aiimusicserver.annos.ResponseResult;
 import xyz.mrkwcode.aiimusicserver.exceptions.UniverCustomException;
+import xyz.mrkwcode.aiimusicserver.pojos.Creator;
 import xyz.mrkwcode.aiimusicserver.pojos.Result;
 import xyz.mrkwcode.aiimusicserver.pojos.User;
+import xyz.mrkwcode.aiimusicserver.services.CreatorService;
 import xyz.mrkwcode.aiimusicserver.services.UserService;
 import xyz.mrkwcode.aiimusicserver.utils.JwtUtil;
 import xyz.mrkwcode.aiimusicserver.utils.Md5Util;
@@ -31,6 +33,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private CreatorService creatorService;
     @PostMapping("/signup")
     public void signup(@Pattern(regexp = "^(?!_)(?!.*?_$)\\w{8,20}$") /* 8-20位大小写字母及数字下划线 */ String username, @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[\\s\\S]{8,16}$") String password) {
         // 查询是否有同名用户
@@ -126,6 +130,14 @@ public class UserController {
         User loginUser = userService.findByUsername(username);
         if(loginUser.getPermission().equals("admin")) {
             userService.updatePermission(uid, newPermission);
+            if(newPermission.equals("creator")) {
+                Creator creator = new Creator();
+                creator.setCreatorname(loginUser.getUsername());
+                creator.setGender(loginUser.getGender());
+                creator.setBirth(loginUser.getBirth());
+                creator.setCreatorAvator(loginUser.getAvatarUrl());
+                creatorService.addCreator(creator);
+            }
         } else {
             if(!uid.equals(loginUser.getUid())) throw new UniverCustomException(500, "普通用户请进行自己账号的权限申请");
             else userService.forUpdatePermission(newPermission);
