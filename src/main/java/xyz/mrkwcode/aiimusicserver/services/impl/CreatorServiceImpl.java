@@ -21,4 +21,9 @@ public class CreatorServiceImpl implements CreatorService {
     public Creator ifExistFindByUid(Integer uid) {
         return creatorMapper.ifExistFindByUid(uid);
     }
+
+    @Override
+    public void addCreator(Creator creator) {
+        creatorMapper.addCreator(creator);
+    }
 }

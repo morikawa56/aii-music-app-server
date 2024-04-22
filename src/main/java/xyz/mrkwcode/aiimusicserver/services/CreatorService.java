@@ -6,4 +6,6 @@ public interface CreatorService {
     Creator findByCreatorName(String creatorname);
 
     Creator ifExistFindByUid(Integer uid);
+
+    void addCreator(Creator creator);
 }

@@ -1685,4 +1685,75 @@ mlid=20
 
 
 
-## 四、管理员功能
+## 四、其它接口
+
+### 1. 查看任务列表
+
+#### 1.1 基本信息
+
+> 请求路径：/api/admin/tsaklist
+>
+> 请求方式：GET
+>
+> 接口描述：该接口查看本用户所有任务（管理员或者创作者）
+
+#### 1.2 请求参数
+
+请求参数格式：multipart/form-data
+
+请求参数说明：
+
+| 参数名称 | 说明   | 类型   | 是否必须 | 备注 |      |
+| -------- | ------ | ------ | -------- | ---- | ---- |
+| uid      | 用户ID | number | 是       |      |      |
+
+请求数据样例：
+
+````shell
+uid=3
+````
+
+
+
+#### 1.3 响应数据
+
+响应数据类型：application/json
+
+响应参数说明：
+
+| 名称    | 类型   | 是否必须 | 默认值 | 备注                  | 其他信息 |
+| ------- | ------ | -------- | ------ | --------------------- | -------- |
+| code    | number | 必须     |        | 响应码, 0-成功,1-失败 |          |
+| status  | number | 必须     |        | HTTP状态码            |          |
+| message | string | 非必须   |        | 提示信息              |          |
+| data    | object | 非必须   |        | 返回的数据            |          |
+
+响应数据样例：
+
+```json
+{
+    "code": 0,
+    "status": 200,
+    "message": "操作成功",
+    "data": [
+        {
+        	"taskId": 2,
+        	"perimission": "admin",
+            "operator": null,
+            "beOperator": 3,
+            "detail": {
+                "created_time":1712054883000,
+                "updated_time":null,
+                "finished_time":null,
+                "operation":"updatePermission",
+                "status":"TOC",
+                "update-to":"admin"
+            }
+    	},
+        ...
+    ]
+}
+```
+
+
+### 
