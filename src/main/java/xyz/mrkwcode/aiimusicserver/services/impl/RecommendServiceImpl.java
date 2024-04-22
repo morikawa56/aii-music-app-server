@@ -94,7 +94,7 @@ public class RecommendServiceImpl implements RecommendMusiclistService {
         for (Integer productId : productIdList) {
             musicList.add(musicMapper.findByMid(productId));
         }
-        System.out.println("aaaaaaa=========" + musicList);
+        // System.out.println("aaaaaaa=========" + musicList);
         return musicList;
     }
 

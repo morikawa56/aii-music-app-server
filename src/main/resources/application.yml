@@ -3,7 +3,7 @@ spring:
     name: aii-music-server
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.0.101:3306/aii_server
+    url: jdbc:mysql://62.234.11.65:3306/aii_server
     username: aii_server
     password: 5C86pZkFaSzbj74E
   servlet:
@@ -12,7 +12,7 @@ spring:
       max-request-size: 50MB
   data:
     redis:
-      host: 192.168.0.101
+      host: 62.234.11.65
       port: 6379
       password: Ajm428252
 mybatis:
