@@ -15,6 +15,11 @@ public class UserTask {
     private String permission;
     private Integer operator;
     private Integer beOperator;
+    private String status;
     @NotEmpty
     private String detail;
+
+    public static int compareByTaskId(UserTask userTask1, UserTask userTask2) {
+        return userTask1.getTaskId().compareTo(userTask2.getTaskId());
+    }
 }

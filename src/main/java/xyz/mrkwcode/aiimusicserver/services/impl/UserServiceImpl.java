@@ -98,9 +98,9 @@ public class UserServiceImpl implements UserService {
         UserTask userTask = new UserTask();
         userTask.setBeOperator(uid);
         userTask.setPermission("admin");
+        userTask.setStatus("TOC"); // TOC——等待批准
         Map<String,Object> userTaskMap = new HashMap<String,Object>();
         userTaskMap.put("operation", "updatePermission");
-        userTaskMap.put("status", "TOC"); // TOC——等待批准
         userTaskMap.put("update-to", newPermission);
         userTaskMap.put("created_time", time);
         userTaskMap.put("updated_time", null);
@@ -125,9 +125,9 @@ public class UserServiceImpl implements UserService {
         UserTask userTask = new UserTask();
         userTask.setBeOperator(uid);
         userTask.setPermission("admin");
+        userTask.setStatus("TOC"); // TOC——等待批准
         Map<String,Object> userTaskMap = new HashMap<String,Object>();
         userTaskMap.put("operation", "banUser");
-        userTaskMap.put("status", "TOC"); // TOC——等待批准
         userTaskMap.put("update-to", isBanned);
         userTaskMap.put("created_time", time);
         userTaskMap.put("updated_time", null);

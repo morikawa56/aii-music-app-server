@@ -31,12 +31,12 @@ public interface UserMapper {
     @Update("Update aii_music_user set permission=#{newPermission},updated_time=#{updatedTime} where uid=#{uid}")
     void updatePermission(Integer uid, String newPermission, Timestamp updatedTime);
 
-    @Insert("Insert into aii_music_user_tasklist(task_id, permission, be_operator,detail)" +
-            "values(#{taskId}, #{permission}, #{beOperator}, #{detail})")
+    @Insert("Insert into aii_music_user_tasklist(task_id, permission, be_operator, status, detail)" +
+            "values(#{taskId}, #{permission}, #{beOperator}, #{status}, #{detail})")
     void forUpdatePermission(UserTask userTask);
 
-    @Insert("Insert into aii_music_user_tasklist(task_id, permission, be_operator,detail)" +
-            "values(#{taskId}, #{permission}, #{beOperator}, #{detail})")
+    @Insert("Insert into aii_music_user_tasklist(task_id, permission, be_operator, status, detail)" +
+            "values(#{taskId}, #{permission}, #{beOperator}, #{status}, #{detail})")
     void forBanUser(UserTask userTask);
 
     @Update("Update aii_music_user set is_banned=#{isBanned},updated_time=#{updatedTime} where uid=#{uid}")

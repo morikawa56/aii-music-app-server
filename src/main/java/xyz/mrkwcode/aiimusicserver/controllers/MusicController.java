@@ -53,10 +53,11 @@ public class MusicController {
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer uid = (Integer) map.get("uid");
         User loginUser = userService.findByUid(uid);
-        if(loginUser.getPermission() != "admin" && loginUser.getPermission() !="creator") throw new UniverCustomException(500, "普通用户没有权限上传音乐");
+        if(!loginUser.getPermission().equals("admin")  && !loginUser.getPermission().equals("creator")) throw new UniverCustomException(500, "普通用户没有权限上传音乐");
+        if(loginUser.getIsBanned() == true) throw new UniverCustomException(500, "用户被封禁不能上传音乐");
 
         if(req.getParameter("musicname").isEmpty() || req.getParameter("musicname").matches("\s")) throw new UniverCustomException(500, "请填写音乐名称！");
-        if(loginUser.getPermission() !="creator" && (req.getParameter("creator").isEmpty() || req.getParameter("creator").matches("\s"))) throw new UniverCustomException(500, "请填写创作者信息！");
+        if(!loginUser.getPermission().equals("creator") && (req.getParameter("creator").isEmpty() || req.getParameter("creator").matches("\s"))) throw new UniverCustomException(500, "请填写创作者信息！");
         if(req.getParameter("album").isEmpty() || req.getParameter("album").matches("\s")) throw new UniverCustomException(500, "请填写专辑信息！");
         if(req.getParameter("publishedTime").isEmpty() || req.getParameter("publishedTime").matches("\s")) throw new UniverCustomException(500, "请填写发行日期！");
 
@@ -111,6 +112,11 @@ public class MusicController {
 
     @PutMapping
     public void updateMusicInfo(@RequestBody MusicReq musicReq) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        User loginUser = userService.findByUid(uid);
+        if(!loginUser.getPermission().equals("admin")  && !loginUser.getPermission().equals("creator")) throw new UniverCustomException(500, "普通用户没有权限修改音乐");
+        if(loginUser.getIsBanned() == true) throw new UniverCustomException(500, "用户被封禁不能修改音乐");
         Music music = new Music();
         music.setMid(musicReq.getMid());
         music.setMusicname(musicReq.getMusicname());
@@ -129,6 +135,11 @@ public class MusicController {
 
     @PutMapping("/res")
     public String updateMusicRes(@RequestParam("mid") Integer mid,@RequestParam("file") MultipartFile file) throws IOException {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        User loginUser = userService.findByUid(uid);
+        if(!loginUser.getPermission().equals("admin")  && !loginUser.getPermission().equals("creator")) throw new UniverCustomException(500, "普通用户没有权限修改音乐");
+        if(loginUser.getIsBanned() == true) throw new UniverCustomException(500, "用户被封禁不能修改音乐");
         Music music = musicService.findByMid(mid);
         String oldUrl = music.getResUrl();
         TcosUtil.removeObject(oldUrl);
@@ -145,6 +156,11 @@ public class MusicController {
 
     @PutMapping("/avatar")
     public String updateMusicAvatar(@RequestParam("mid") Integer mid,@RequestParam("file") MultipartFile file) throws IOException {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        User loginUser = userService.findByUid(uid);
+        if(!loginUser.getPermission().equals("admin")  && !loginUser.getPermission().equals("creator")) throw new UniverCustomException(500, "普通用户没有权限修改音乐");
+        if(loginUser.getIsBanned() == true) throw new UniverCustomException(500, "用户被封禁不能修改音乐");
         Music music = musicService.findByMid(mid);
         String oldUrl = music.getMusicAvatar();
         TcosUtil.removeObject(oldUrl);
@@ -161,6 +177,11 @@ public class MusicController {
 
     @DeleteMapping("/unshelve")
     public void unshelve(@RequestBody UnshelveReq unshelveReq) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        User loginUser = userService.findByUid(uid);
+        if(!loginUser.getPermission().equals("admin")  && !loginUser.getPermission().equals("creator")) throw new UniverCustomException(500, "普通用户没有权限修改音乐");
+        if(loginUser.getIsBanned() == true) throw new UniverCustomException(500, "用户被封禁不能修改音乐");
         Integer mid = unshelveReq.getMid();
         Boolean type = unshelveReq.getType();
         if(type) {
@@ -177,6 +198,11 @@ public class MusicController {
 
     @PatchMapping("/shelve")
     public void shelve(@RequestParam Integer mid) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        User loginUser = userService.findByUid(uid);
+        if(!loginUser.getPermission().equals("admin")  && !loginUser.getPermission().equals("creator")) throw new UniverCustomException(500, "普通用户没有权限修改音乐");
+        if(loginUser.getIsBanned() == true) throw new UniverCustomException(500, "用户被封禁不能修改音乐");
         musicService.shelveMusic(mid);
     }
 
