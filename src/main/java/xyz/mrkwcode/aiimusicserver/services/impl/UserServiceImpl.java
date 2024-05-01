@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.mrkwcode.aiimusicserver.DAOs.UserMapper;
+import xyz.mrkwcode.aiimusicserver.exceptions.UniverCustomException;
 import xyz.mrkwcode.aiimusicserver.pojos.User;
 import xyz.mrkwcode.aiimusicserver.pojos.UserTask;
 import xyz.mrkwcode.aiimusicserver.services.UserService;
@@ -48,6 +49,7 @@ public class UserServiceImpl implements UserService {
         u.setPassword(md5Password);
         u.setPermission("user");
         u.setProfile("{}");
+        u.setIsBanned(false);
         u.setCreatedTime(timestamp);
         u.setUpdatedTime(timestamp);
         // 向数据库添加记录
@@ -145,6 +147,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void banUser(Integer uid, Boolean isBanned) {
+        User loginUser = userMapper.findByUid(uid);
+        if(loginUser == null) throw new UniverCustomException(500, "该用户不存在");
         String now = TimeUtil.dateToString(new Date(), TimeUtil.TIME_FULL_SPRIT);
         Timestamp updatedTime = Timestamp.valueOf(now);
         userMapper.banUser(uid,isBanned,updatedTime);

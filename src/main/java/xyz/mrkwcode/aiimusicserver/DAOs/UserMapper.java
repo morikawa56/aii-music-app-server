@@ -15,8 +15,8 @@ public interface UserMapper {
     @Select("Select * from aii_music_user where username=#{username}")
     User findByUsername(String username);
 
-    @Insert("Insert into aii_music_user(username, nickname, password, permission, profile, created_time, updated_time, gender)" +
-            "values(#{username}, #{nickname}, #{password}, #{permission}, #{profile}, #{createdTime}, #{updatedTime}, 'unknown')")
+    @Insert("Insert into aii_music_user(username, nickname, password, permission, profile, created_time, updated_time, gender, is_banned)" +
+            "values(#{username}, #{nickname}, #{password}, #{permission}, #{profile}, #{createdTime}, #{updatedTime}, 'unknown', #{isBanned})")
     void add(User user);
 
     @Update("Update aii_music_user set nickname=#{nickname},email_address=#{emailAddress},phone_number=#{phoneNumber},profile=#{profile},updated_time=#{updatedTime} where uid=#{uid}")

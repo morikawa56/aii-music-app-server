@@ -44,8 +44,15 @@ public class MusiclistServiceImpl implements MusiclistService {
     }
 
     @Override
-    public void searchMusiclistByname(String musiclistname) {
+    public List<Musiclist> searchMusiclistByname(String musiclistname) {
+        List<Musiclist> musiclists = musiclistMapper.searchMusiclistByname(musiclistname);
+        return musiclists;
+    }
 
+    @Override
+    public Musiclist searchMusiclistById(Integer mlid) {
+        Musiclist musiclist = musiclistMapper.findByMlid(mlid);
+        return musiclist;
     }
 
     @Override
@@ -98,5 +105,12 @@ public class MusiclistServiceImpl implements MusiclistService {
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer uid = (Integer) map.get("uid");
         musiclistMapper.delFavMusiclist(uid, mlid);
+    }
+
+    @Override
+    public void deleteMusiclist(Integer mlid) {
+        musiclistMapper.delFavCausedNone(mlid);
+        musiclistMapper.deleteMusiclist(mlid);
+        musiclistMapper.cancelMusicToMusiclistByMlid(mlid);
     }
 }

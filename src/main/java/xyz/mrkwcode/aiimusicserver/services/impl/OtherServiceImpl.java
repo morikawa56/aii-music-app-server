@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.mrkwcode.aiimusicserver.DAOs.OtherMapper;
 import xyz.mrkwcode.aiimusicserver.DAOs.UserMapper;
+import xyz.mrkwcode.aiimusicserver.exceptions.UniverCustomException;
+import xyz.mrkwcode.aiimusicserver.pojos.Comment;
 import xyz.mrkwcode.aiimusicserver.pojos.User;
 import xyz.mrkwcode.aiimusicserver.pojos.UserTask;
 import xyz.mrkwcode.aiimusicserver.services.OtherService;
@@ -53,6 +55,7 @@ public class OtherServiceImpl implements OtherService {
         userMapper.banUser(userTask.getBeOperator(), true, time);
         userTask.setStatus("FIN"); // FIN——已完成
         Map<String, Object> userTaskMap = JSONObject.parseObject(userTask.getDetail());
+        if(!userTaskMap.get("operation").equals("banUser")) throw new UniverCustomException(500, "请进行合法操作");
         long nowTime = System.currentTimeMillis();
         userTaskMap.replace("updated_time", nowTime);
         userTaskMap.replace("finished_time", nowTime);
@@ -64,5 +67,46 @@ public class OtherServiceImpl implements OtherService {
                 SerializerFeature.WriteNullNumberAsZero);
         userTask.setDetail(userTaskJson);
         otherMapper.updateTask(userTask);
+    }
+
+    @Override
+    public void changePermission(UserTask userTask) {
+        String now = TimeUtil.dateToString(new Date(), TimeUtil.TIME_FULL_SPRIT);
+        Timestamp time = Timestamp.valueOf(now);
+        userTask.setStatus("FIN"); // FIN——已完成
+        Map<String, Object> userTaskMap = JSONObject.parseObject(userTask.getDetail());
+        if(!userTaskMap.get("operation").equals("updatePermission")) throw new UniverCustomException(500, "请进行合法操作");
+        userMapper.updatePermission(userTask.getBeOperator(), (String) userTaskMap.get("update-to"), time);
+        long nowTime = System.currentTimeMillis();
+        userTaskMap.replace("updated_time", nowTime);
+        userTaskMap.replace("finished_time", nowTime);
+        String userTaskJson = JSONObject.toJSONString(userTaskMap,
+                SerializerFeature.WriteMapNullValue,
+                SerializerFeature.WriteNullBooleanAsFalse,
+                SerializerFeature.WriteNullListAsEmpty,
+                SerializerFeature.WriteNullStringAsEmpty,
+                SerializerFeature.WriteNullNumberAsZero);
+        userTask.setDetail(userTaskJson);
+        otherMapper.updateTask(userTask);
+    }
+
+    @Override
+    public void addComment(Comment comment) {
+        otherMapper.addComment(comment);
+    }
+
+    @Override
+    public void removeComment(Integer cmid) {
+        otherMapper.removeComment(cmid);
+    }
+
+    @Override
+    public void like(Comment comment) {
+        otherMapper.like(comment);
+    }
+
+    @Override
+    public Comment findCommentByCmid(Integer cmid) {
+        return otherMapper.findCommentByCmid(cmid);
     }
 }

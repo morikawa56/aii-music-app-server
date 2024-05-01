@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import xyz.mrkwcode.aiimusicserver.annos.Gender;
 import xyz.mrkwcode.aiimusicserver.annos.ResponseResult;
 import xyz.mrkwcode.aiimusicserver.exceptions.UniverCustomException;
@@ -18,10 +19,13 @@ import xyz.mrkwcode.aiimusicserver.services.CreatorService;
 import xyz.mrkwcode.aiimusicserver.services.UserService;
 import xyz.mrkwcode.aiimusicserver.utils.JwtUtil;
 import xyz.mrkwcode.aiimusicserver.utils.Md5Util;
+import xyz.mrkwcode.aiimusicserver.utils.TcosUtil.TcosUtil;
 import xyz.mrkwcode.aiimusicserver.utils.ThreadLocalUtil;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -35,6 +39,8 @@ public class UserController {
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private CreatorService creatorService;
+
+    private static final String COS_UAVATAR_PATH = "aii-music/useravatar/";
     @PostMapping("/signup")
     public void signup(@Pattern(regexp = "^(?!_)(?!.*?_$)\\w{8,20}$") /* 8-20位大小写字母及数字下划线 */ String username, @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[\\s\\S]{8,16}$") String password) {
         // 查询是否有同名用户
@@ -81,11 +87,33 @@ public class UserController {
 
     @PutMapping
     public void update(@RequestBody @Validated(User.Update.class) User user) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        User loginUser = userService.findByUid(uid);
+        if(loginUser == null) throw new UniverCustomException(500, "该用户不存在");
+        if(user.getUid() != uid && !loginUser.getPermission().equals("admin")) {
+            throw new UniverCustomException(500, "非管理员请修改自己的账户信息");
+        }
         userService.update(user);
     }
 
     @PatchMapping("/avatar")
-    public void updateAvatar(@RequestParam @URL String avatarUrl) {
+    public void updateAvatar(@RequestParam("uid") Integer uid,@RequestParam("avatarfile") MultipartFile avatarfile) throws IOException {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer loginUid = (Integer) map.get("uid");
+        User loginUser = userService.findByUid(loginUid);
+        if(loginUser == null) throw new UniverCustomException(500, "该用户不存在");
+        if(uid != loginUid && !loginUser.getPermission().equals("admin")) {
+            throw new UniverCustomException(500, "非管理员请修改自己的账户信息");
+        }
+        String oldUrl = loginUser.getAvatarUrl();
+        TcosUtil.removeObject(oldUrl);
+        String resOriginalFilename = avatarfile.getOriginalFilename();
+        String resFilename = null;
+        if (resOriginalFilename != null) {
+            resFilename = resOriginalFilename.substring(0, resOriginalFilename.lastIndexOf(".")) + "_" + UUID.randomUUID().toString() + resOriginalFilename.substring(resOriginalFilename.lastIndexOf("."));
+        }
+        String avatarUrl = TcosUtil.uploadFile(COS_UAVATAR_PATH, resFilename, avatarfile.getInputStream());
         userService.updateAvatar(avatarUrl);
     }
 
@@ -128,6 +156,7 @@ public class UserController {
         Map<String,Object> map = ThreadLocalUtil.get();
         String username = (String) map.get("username");
         User loginUser = userService.findByUsername(username);
+        if(loginUser == null) throw new UniverCustomException(500, "该用户不存在");
         if(loginUser.getPermission().equals("admin")) {
             userService.updatePermission(uid, newPermission);
             if(newPermission.equals("creator")) {

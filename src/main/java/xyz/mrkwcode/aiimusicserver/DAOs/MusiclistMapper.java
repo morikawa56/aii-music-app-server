@@ -36,4 +36,16 @@ public interface MusiclistMapper {
 
     @Delete("Delete from aii_music_favourite where mlid=#{mlid} and uid=#{uid}")
     void delFavMusiclist(Integer uid, Integer mlid);
+
+    @Select("SELECT * from aii_music_musiclist where find_in_set(#{musiclistname}, musiclistname) ")
+    List<Musiclist> searchMusiclistByname(String musiclistname);
+
+    @Delete("Delete from aii_music_musiclist where mlid=#{mlid}")
+    void deleteMusiclist(Integer mlid);
+
+    @Delete("Delete from aii_music_favourite where is_musiclist=1 and mlid=#{mlid}")
+    void delFavCausedNone(Integer mlid);
+
+    @Delete("Delete from aii_music_musictolist where mlid=#{mlid}")
+    void cancelMusicToMusiclistByMlid(Integer mlid);
 }

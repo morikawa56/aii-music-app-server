@@ -1,7 +1,10 @@
 package xyz.mrkwcode.aiimusicserver.controllers;
 
+import com.alibaba.fastjson.JSONArray;
+import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +14,7 @@ import xyz.mrkwcode.aiimusicserver.exceptions.UniverCustomException;
 import xyz.mrkwcode.aiimusicserver.pojos.*;
 import xyz.mrkwcode.aiimusicserver.services.CreatorService;
 import xyz.mrkwcode.aiimusicserver.services.MusicService;
+import xyz.mrkwcode.aiimusicserver.services.MusiclistService;
 import xyz.mrkwcode.aiimusicserver.services.UserService;
 import xyz.mrkwcode.aiimusicserver.utils.TcosUtil.TcosUtil;
 import xyz.mrkwcode.aiimusicserver.utils.ThreadLocalUtil;
@@ -23,10 +27,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -42,6 +43,9 @@ public class MusicController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MusiclistService musiclistService;
 
     private static final String COS_MRES_PATH = "aii-music/musicres/";
     private static final String COS_MAVATAR_PATH = "aii-music/musicavatar/";
@@ -112,10 +116,18 @@ public class MusicController {
 
     @PutMapping
     public void updateMusicInfo(@RequestBody MusicReq musicReq) {
+        if(musicService.findByMid(musicReq.getMid()) == null) throw new UniverCustomException(404, "无该音乐");
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer uid = (Integer) map.get("uid");
         User loginUser = userService.findByUid(uid);
         if(!loginUser.getPermission().equals("admin")  && !loginUser.getPermission().equals("creator")) throw new UniverCustomException(500, "普通用户没有权限修改音乐");
+        if(loginUser.getPermission().equals("creator")) {
+            Music editingMusic = musicService.findByMid(musicReq.getMid());
+            Integer cid = creatorService.ifExistFindByUid(uid).getCid();
+            JSONArray creatorIds = JSONArray.parseArray(editingMusic.getCreator());
+            System.out.println(creatorIds + "   " + cid);
+            if(!creatorIds.contains(cid)) throw new UniverCustomException(500, "非本人歌曲无法修改");
+        }
         if(loginUser.getIsBanned() == true) throw new UniverCustomException(500, "用户被封禁不能修改音乐");
         Music music = new Music();
         music.setMid(musicReq.getMid());
@@ -135,10 +147,18 @@ public class MusicController {
 
     @PutMapping("/res")
     public String updateMusicRes(@RequestParam("mid") Integer mid,@RequestParam("file") MultipartFile file) throws IOException {
+        if(musicService.findByMid(mid) == null) throw new UniverCustomException(404, "无该音乐");
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer uid = (Integer) map.get("uid");
         User loginUser = userService.findByUid(uid);
         if(!loginUser.getPermission().equals("admin")  && !loginUser.getPermission().equals("creator")) throw new UniverCustomException(500, "普通用户没有权限修改音乐");
+        if(loginUser.getPermission().equals("creator")) {
+            Music editingMusic = musicService.findByMid(mid);
+            Integer cid = creatorService.ifExistFindByUid(uid).getCid();
+            JSONArray creatorIds = JSONArray.parseArray(editingMusic.getCreator());
+            System.out.println(creatorIds + "   " + cid);
+            if(!creatorIds.contains(cid)) throw new UniverCustomException(500, "非本人歌曲无法修改");
+        }
         if(loginUser.getIsBanned() == true) throw new UniverCustomException(500, "用户被封禁不能修改音乐");
         Music music = musicService.findByMid(mid);
         String oldUrl = music.getResUrl();
@@ -156,10 +176,18 @@ public class MusicController {
 
     @PutMapping("/avatar")
     public String updateMusicAvatar(@RequestParam("mid") Integer mid,@RequestParam("file") MultipartFile file) throws IOException {
+        if(musicService.findByMid(mid) == null) throw new UniverCustomException(404, "无该音乐");
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer uid = (Integer) map.get("uid");
         User loginUser = userService.findByUid(uid);
         if(!loginUser.getPermission().equals("admin")  && !loginUser.getPermission().equals("creator")) throw new UniverCustomException(500, "普通用户没有权限修改音乐");
+        if(loginUser.getPermission().equals("creator")) {
+            Music editingMusic = musicService.findByMid(mid);
+            Integer cid = creatorService.ifExistFindByUid(uid).getCid();
+            JSONArray creatorIds = JSONArray.parseArray(editingMusic.getCreator());
+            System.out.println(creatorIds + "   " + cid);
+            if(!creatorIds.contains(cid)) throw new UniverCustomException(500, "非本人歌曲无法修改");
+        }
         if(loginUser.getIsBanned() == true) throw new UniverCustomException(500, "用户被封禁不能修改音乐");
         Music music = musicService.findByMid(mid);
         String oldUrl = music.getMusicAvatar();
@@ -177,10 +205,18 @@ public class MusicController {
 
     @DeleteMapping("/unshelve")
     public void unshelve(@RequestBody UnshelveReq unshelveReq) {
+        if(musicService.findByMid(unshelveReq.getMid()) == null) throw new UniverCustomException(404, "无该音乐");
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer uid = (Integer) map.get("uid");
         User loginUser = userService.findByUid(uid);
         if(!loginUser.getPermission().equals("admin")  && !loginUser.getPermission().equals("creator")) throw new UniverCustomException(500, "普通用户没有权限修改音乐");
+        if(loginUser.getPermission().equals("creator")) {
+            Music editingMusic = musicService.findByMid(unshelveReq.getMid());
+            Integer cid = creatorService.ifExistFindByUid(uid).getCid();
+            JSONArray creatorIds = JSONArray.parseArray(editingMusic.getCreator());
+            System.out.println(creatorIds + "   " + cid);
+            if(!creatorIds.contains(cid)) throw new UniverCustomException(500, "非本人歌曲无法修改");
+        }
         if(loginUser.getIsBanned() == true) throw new UniverCustomException(500, "用户被封禁不能修改音乐");
         Integer mid = unshelveReq.getMid();
         Boolean type = unshelveReq.getType();
@@ -198,21 +234,44 @@ public class MusicController {
 
     @PatchMapping("/shelve")
     public void shelve(@RequestParam Integer mid) {
+        if(musicService.findByMid(mid) == null) throw new UniverCustomException(404, "无该音乐");
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer uid = (Integer) map.get("uid");
         User loginUser = userService.findByUid(uid);
         if(!loginUser.getPermission().equals("admin")  && !loginUser.getPermission().equals("creator")) throw new UniverCustomException(500, "普通用户没有权限修改音乐");
+        if(loginUser.getPermission().equals("creator")) {
+            Music editingMusic = musicService.findByMid(mid);
+            Integer cid = creatorService.ifExistFindByUid(uid).getCid();
+            JSONArray creatorIds = JSONArray.parseArray(editingMusic.getCreator());
+            System.out.println(creatorIds + "   " + cid);
+            if(!creatorIds.contains(cid)) throw new UniverCustomException(500, "非本人歌曲无法修改");
+        }
         if(loginUser.getIsBanned() == true) throw new UniverCustomException(500, "用户被封禁不能修改音乐");
         musicService.shelveMusic(mid);
     }
 
     @PostMapping("/listed")
     public void listed(@RequestParam Integer mid, @RequestParam Integer mlid) {
+        Musiclist musiclist = musiclistService.searchMusiclistById(mlid);
+        if (musiclist == null) throw new UniverCustomException(404, "该歌单不存在");
+        Music music = musicService.findByMid(mid);
+        if(music == null) throw new UniverCustomException(404, "该音乐不存在");
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        if(!musiclist.getUid().equals(uid)) throw new UniverCustomException(500, "禁止修改他人歌单");
         musicService.listed(mid, mlid);
     }
 
     @DeleteMapping("/listed")
     public void deleteListed(@RequestParam Integer mid, @RequestParam Integer mlid) {
+        Musiclist musiclist = musiclistService.searchMusiclistById(mlid);
+        if (musiclist == null) throw new UniverCustomException(404, "该歌单不存在");
+        Music music = musicService.findByMid(mid);
+        if(music == null) throw new UniverCustomException(404, "该音乐不存在");
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer uid = (Integer) map.get("uid");
+        User loginUser = userService.findByUid(uid);
+        if(!loginUser.getPermission().equals("admin") || !musiclist.getUid().equals(uid)) throw new UniverCustomException(500, "非管理员禁止修改他人歌单");
         Integer mapid = musicService.searchListedMusicRecord(mid, mlid);
         musicService.deleteMusicMap(mapid);
     }
