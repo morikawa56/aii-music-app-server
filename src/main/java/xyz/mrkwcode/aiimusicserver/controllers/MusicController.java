@@ -12,10 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import xyz.mrkwcode.aiimusicserver.annos.ResponseResult;
 import xyz.mrkwcode.aiimusicserver.exceptions.UniverCustomException;
 import xyz.mrkwcode.aiimusicserver.pojos.*;
-import xyz.mrkwcode.aiimusicserver.services.CreatorService;
-import xyz.mrkwcode.aiimusicserver.services.MusicService;
-import xyz.mrkwcode.aiimusicserver.services.MusiclistService;
-import xyz.mrkwcode.aiimusicserver.services.UserService;
+import xyz.mrkwcode.aiimusicserver.services.*;
 import xyz.mrkwcode.aiimusicserver.utils.TcosUtil.TcosUtil;
 import xyz.mrkwcode.aiimusicserver.utils.ThreadLocalUtil;
 
@@ -43,6 +40,9 @@ public class MusicController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AlbumService albumService;
 
     @Autowired
     private MusiclistService musiclistService;

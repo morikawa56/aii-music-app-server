@@ -49,6 +49,7 @@ public class OtherController {
             otherService.banUser(userTask);
         }
     }
+
     @PatchMapping("/changePermission")
     public void changePermission(@RequestParam Integer taskid) {
         Map<String, Object> map = ThreadLocalUtil.get();
@@ -65,14 +66,20 @@ public class OtherController {
     @PostMapping("/comment")
     public void addComment(@RequestParam(required = false) Integer mid,
                            @RequestParam(required = false) Integer mlid,
-                           @RequestParam String content,
-                           @RequestParam Boolean isMusiclist) {
+                           @RequestParam String content) {
         if(mid == null && mlid == null) {
             throw new UniverCustomException(500, "请至少填入一个mid或mlid");
         }
-        Comment comment = new Comment();
+        if(mid != null && mlid != null) {
+            throw new UniverCustomException(500, "mlid或mid只能填入一个");
+        }
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer uid = (Integer) map.get("uid");
+        User loginUser = userService.findByUid(uid);
+        if(loginUser.getIsBanned() == true) throw new UniverCustomException(500, "用户被封禁不能进行评论");
+
+        Boolean isMusiclist = mid == null ? true : false;
+        Comment comment = new Comment();
         comment.setUid(uid);
         comment.setIsMusiclist(isMusiclist);
         if (isMusiclist == false) {
@@ -84,6 +91,7 @@ public class OtherController {
         String now = TimeUtil.dateToString(new Date(), TimeUtil.TIME_FULL_SPRIT);
         Timestamp time = Timestamp.valueOf(now);
         comment.setCreatedTime(time);
+        comment.setUpdatedTime(time);
         otherService.addComment(comment);
     }
 
@@ -106,6 +114,9 @@ public class OtherController {
         Comment comment = new Comment();
         comment.setCmid(cmid);
         comment.setUp(up);
+        String now = TimeUtil.dateToString(new Date(), TimeUtil.TIME_FULL_SPRIT);
+        Timestamp time = Timestamp.valueOf(now);
+        comment.setUpdatedTime(time);
         otherService.like(comment);
     }
 

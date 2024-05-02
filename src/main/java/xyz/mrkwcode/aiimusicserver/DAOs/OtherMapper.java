@@ -16,8 +16,8 @@ public interface OtherMapper {
     UserTask findTaskByTaskId(Integer taskId);
     @Update("Update aii_music_user_tasklist set permission=#{permission}, operator=#{operator}, be_operator=#{beOperator}, detail=#{detail}, status=#{status} where task_id=#{taskId}")
     void updateTask(UserTask userTask);
-    @Insert("Insert into aii_music_comment(cmid, uid, mid, mlid, content, up, created_time, updated_time, is_musiclist)" +
-            "values(cmid, uid, mid, mlid, content, up, createdTime, updatedTime, isMusiclist)")
+    @Insert("Insert into aii_music_comment(cmid, uid, mid, mlid, content, created_time, updated_time, is_musiclist)" +
+            "values(#{cmid}, #{uid}, #{mid}, #{mlid}, #{content}, #{createdTime}, #{updatedTime}, #{isMusiclist})")
     void addComment(Comment comment);
     @Delete("Delete from aii_music_comment where cmid=#{cmid}")
     void removeComment(Integer cmid);

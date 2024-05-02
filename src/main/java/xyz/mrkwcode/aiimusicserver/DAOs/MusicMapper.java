@@ -17,7 +17,7 @@ public interface MusicMapper {
 
     List<Music> getMusicListDefault(String musicname, String creator);
 
-    List<Music> getMusicListUserId(String musicname, String creator, Integer uid);
+    List<Music> getMusicListCreatorId(String musicname, String creator, Integer cid);
 
     @Update("Update aii_music_musicinfo set musicname=#{musicname},creator=#{creator},lyric=#{lyric},introduction=#{introduction},published_time=#{publishedTime},updated_time=now() where mid=#{mid}")
     void updateMusicInfo(Music music);

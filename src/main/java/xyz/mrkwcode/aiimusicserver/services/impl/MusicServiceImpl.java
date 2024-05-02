@@ -25,6 +25,9 @@ import java.util.Map;
 public class MusicServiceImpl implements MusicService {
     @Autowired
     private MusicMapper musicMapper;
+    @Autowired
+    private CreatorMapper creatorMapper;
+
     @Override
     public Music findByMid(Integer mid) {
         return musicMapper.findByMid(mid);
@@ -47,7 +50,8 @@ public class MusicServiceImpl implements MusicService {
         if(mode) {
             Map<String,Object> map = ThreadLocalUtil.get();
             Integer userId = (Integer) map.get("uid");
-            ms = musicMapper.getMusicListUserId(musicname,creator,userId);
+            Integer cid = creatorMapper.ifExistFindByUid(userId).getCid();
+            ms = musicMapper.getMusicListCreatorId(musicname,creator,cid);
         } else {
             ms = musicMapper.getMusicListDefault(musicname,creator);
         }

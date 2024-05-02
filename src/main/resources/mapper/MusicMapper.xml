@@ -23,7 +23,7 @@
             <if test="creator!=null">
                 and json_contains( creator, #{creator} )
             </if>
-            and uid=#{uid}
+            and json_contains( creator, #{cid} )
         </where>
     </select>
 </mapper>
